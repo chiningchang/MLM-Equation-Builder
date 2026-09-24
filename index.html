@@ -1,5 +1,5 @@
 <!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MLM Equation Builder</title><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script><style>body{margin:0;font:15px system-ui;background:#f6f7fb;color:#172033}header{padding:28px;max-width:1150px;margin:auto}main{max-width:1150px;margin:auto;padding:0 20px 30px;display:grid;grid-template-columns:380px 1fr;gap:20px}.card{background:white;border:1px solid #e3e6ec;border-radius:14px;padding:20px}h1{margin:0}p{line-height:1.55}.muted{color:#667085}label{display:block;font-weight:650;margin:12px 0 5px}input,select{width:100%;box-sizing:border-box;padding:10px;border:1px solid #ccd2dc;border-radius:8px;font:inherit}.check{display:flex;gap:8px;align-items:center;font-weight:400}.check input{width:auto}.tabs{display:flex;gap:6px;flex-wrap:wrap}.tabs button{border:0;border-radius:8px;padding:9px;background:#f0f2f5;cursor:pointer}.tabs .on{background:#e5eaff;color:#2947a3}.pane{margin-top:18px}.hide{display:none}.eq{font-size:18px;overflow-x:auto;text-align:left}.eq mjx-container[display="true"]{text-align:left!important;margin-left:0!important;margin-right:0!important}.report{background:#f8fafc;padding:14px;border-radius:10px}@media(max-width:800px){main{grid-template-columns:1fr}}button{transition:.15s ease}.addbtn{width:100%;padding:11px 12px;border:1px solid #9aa8c7;border-radius:9px;background:#f7f9ff;color:#2947a3;cursor:pointer;font:inherit;font-weight:650}.addbtn:hover{background:#eef2ff}.builder-section{margin-top:22px;padding-top:18px;border-top:1px solid #e3e6ec}.builder-section h3{margin:0 0 5px}.helper{margin:0 0 12px;color:#667085;font-size:13px;line-height:1.45}.extra-p,.extra-l2,.cross-card{background:#fafbfc}.remove-p,.remove-l2,.remove-cross{font-size:13px}.tabs{border-bottom:1px solid #e3e6ec;padding-bottom:8px}.tabs button{font-weight:600}.pane h3{margin-top:20px}.model-tag{display:inline-block;font-size:12px;font-weight:650;padding:4px 8px;border-radius:999px;background:#eef2ff;color:#2947a3;margin-bottom:10px}@media(max-width:800px){.card{padding:16px}.tabs button{flex:1 1 45%}}</style></head><body><header><h1>MLM Equation Builder</h1><p class="muted">Build your multilevel model. Generate equations, explanations, and reporting text.</p></header><main><section class="card"><h2>Build your model</h2><label>Outcome</label><input id="y" value="Math Achievement"><label>Level 1 unit</label><input id="l1" value="Student"><label>Level 2 unit</label><input id="l2" value="School"><label>Primary Level 1 predictor</label><input id="x" value="SES"><label>Centering</label><select id="c"><option value="none">None</option><option value="grand">Grand-mean centered</option><option value="group" selected>Group-mean centered</option></select><h3 style="margin-top:20px">Random effects</h3><label class="check"><input id="ri" type="checkbox" checked>Random intercept</label><label class="check"><input id="random" type="checkbox" checked>Random slope: <span id="randomLabel">SES</span></label><label class="check" id="rew"><input id="re" type="checkbox" checked>Reintroduce group mean at Level 2</label><label>Primary Level 2 predictor</label><input id="w" value="School Resources"><div class="builder-section"><h3>Cross-Level Interactions</h3><p class="helper">Choose a Level 2 predictor and the Level 1 slope it predicts.</p><div id="crossList"></div><button type="button" id="addCross" class="addbtn">＋ Add Cross-Level Interaction</button></div><p id="warn" class="muted" style="display:none;color:#a15c00"></p><label>Level 2 centering</label><select id="wc"><option value="none">None</option><option value="grand" selected>Grand-mean centered</option></select><div class="builder-section"><h3>Level 2 Predictors</h3><p class="helper">Add group-level predictors and choose whether each is grand-mean centered.</p><div id="extraL2"></div><button type="button" id="addL2" class="addbtn">＋ Add Level 2 Predictor</button></div><label class="check"><input id="cov" type="checkbox" checked>Estimate intercept-slope covariance</label><hr style="border:0;border-top:1px solid #e3e6ec;margin:20px 0"><div class="builder-section"><h3>Level 1 Predictors</h3><p class="helper">Add student-level or other Level 1 predictors. Each predictor can have its own centering and random-slope setting.</p><div id="extraL1"></div><button type="button" id="addL1" class="addbtn">＋ Add Level 1 Predictor</button></div>
-<p class="muted">v0.7: build multiple Level 1 and Level 2 predictors and specify flexible cross-level interactions.</p></section><section class="card"><span class="model-tag">Live model output</span><div class="tabs"><button class="on" data-p="equations">Equations</button><button data-p="variance">Variance</button><button data-p="explain">Explanation</button><button data-p="report">Manuscript draft</button></div><div id="equations" class="pane"></div><div id="variance" class="pane hide"></div><div id="explain" class="pane hide"></div><div id="report" class="pane hide"></div></section></main><footer style="max-width:1150px;margin:0 auto;padding:0 20px 28px;text-align:center;color:#667085;font-size:13px">Created by Chi-Ning (Nick) Chang, Ph.D. · Virginia Commonwealth University · <a href="mailto:changc10@vcu.edu" style="color:inherit">changc10@vcu.edu</a></footer><script>
+<p class="muted">v0.8: equations, model interpretation, and reporting text update together as the model specification changes.</p></section><section class="card"><span class="model-tag">Live model output</span><div class="tabs"><button class="on" data-p="equations">Equations</button><button data-p="variance">Variance</button><button data-p="explain">Explanation</button><button data-p="report">Manuscript draft</button></div><div id="equations" class="pane"></div><div id="variance" class="pane hide"></div><div id="explain" class="pane hide"></div><div id="report" class="pane hide"></div></section></main><footer style="max-width:1150px;margin:0 auto;padding:0 20px 28px;text-align:center;color:#667085;font-size:13px">Created by Chi-Ning (Nick) Chang, Ph.D. · Virginia Commonwealth University · <a href="mailto:changc10@vcu.edu" style="color:inherit">changc10@vcu.edu</a></footer><script>
 var q=function(i){return document.getElementById(i)};
 var clean=function(s){return s.replace(/[^A-Za-z0-9]/g,"")||"X"};
 var tv=function(s){return "\\mathrm{"+clean(s)+"}"};
@@ -116,15 +116,57 @@ function render(){
   if(cov)vh+='<div class=eq>\\[Cov(u_{0j},u_{1j})=\\tau_{01}\\]</div>';
   q("variance").innerHTML=vh;
 
-  var desc=q("y").value+" is modeled for "+q("l1").value.toLowerCase()+"s nested within "+q("l2").value.toLowerCase()+"s. ";
-  desc+=q("x").value+(c==="group"?" is group-mean centered.":c==="grand"?" is grand-mean centered.":" is uncentered.");
-  if(extras.length)desc+=" The model also includes "+extras.map(function(z){return z.p.name}).join(", ")+" as additional Level 1 predictor"+(extras.length>1?"s.":".");if(l2extras.length)desc+=" Additional Level 2 predictors include "+l2extras.map(function(z){return z.p.name}).join(", ")+ ".";
-  q("explain").innerHTML="<h3>Model interpretation</h3><p>"+desc+"</p><p>"+(ri?"A random intercept is included. ":"No random intercept is included. ")+(ran?"The "+q("x").value+" slope is random.":"The "+q("x").value+" slope is fixed.")+(activeCross.length?" Cross-level interactions: "+activeCross.map(function(z){return z.L2.name+" predicts the "+z.L1.name+" slope"}).join("; ")+".":"")+"</p>";
+  var outcome=q("y").value, l1unit=q("l1").value, l2unit=q("l2").value;
+  var centeringText=function(name,cc){
+    if(cc==="group")return name+" is group-mean centered, so its Level 1 coefficient represents a within-"+l2unit.toLowerCase()+" association.";
+    if(cc==="grand")return name+" is grand-mean centered, so zero represents the sample grand mean of "+name+".";
+    return name+" is entered without centering.";
+  };
+  var exp=[];
+  exp.push("<h3>Model overview</h3><p>"+outcome+" is modeled for "+l1unit.toLowerCase()+"s nested within "+l2unit.toLowerCase()+"s.</p>");
+  exp.push("<h3>Level 1 effects</h3><p>"+centeringText(q("x").value,c)+"</p>");
+  extras.forEach(function(z){exp.push("<p>"+centeringText(z.p.name,z.p.centering)+"</p>")});
+  exp.push("<h3>Level 2 effects</h3><p>"+q("w").value+(wc==="grand"?" is grand-mean centered.":" is entered without centering.")+" Its coefficient represents the association between "+q("w").value+" and the expected "+outcome+", conditional on the other terms in the model.</p>");
+  l2extras.forEach(function(z){exp.push("<p>"+z.p.name+(z.p.centering==="grand"?" is grand-mean centered.":" is entered without centering.")+" Its coefficient represents its Level 2 association with the expected "+outcome+", conditional on the other terms.</p>")});
+  var means=[];
+  if(re)means.push(q("x").value);
+  extras.forEach(function(z){if(z.p.centering==="group"&&z.p.re)means.push(z.p.name)});
+  if(means.length){
+    exp.push("<h3>Between-group effects</h3><p>Group means for "+means.join(", ")+" are reintroduced at Level 2. Their coefficients represent between-"+l2unit.toLowerCase()+" associations while the corresponding group-mean-centered Level 1 coefficients represent within-"+l2unit.toLowerCase()+" associations.</p>");
+    exp.push("<p><strong>Contextual effects:</strong> for a predictor whose group mean is reintroduced, a contextual effect can be expressed as the between-"+l2unit.toLowerCase()+" coefficient minus the corresponding within-"+l2unit.toLowerCase()+" coefficient. This contrast should be interpreted only when the within- and between-level terms represent the same underlying predictor on a comparable scale.</p>");
+  }
+  if(activeCross.length){
+    exp.push("<h3>Cross-level interactions</h3>");
+    activeCross.forEach(function(z){exp.push("<p><strong>"+z.L2.name+" × "+z.L1.name+":</strong> the "+z.L1.name+" slope is allowed to differ as a function of "+z.L2.name+". The interaction coefficient indicates how much the "+z.L1.name+" slope changes for a one-unit increase in "+z.L2.name+(z.L2.p&&z.L2.p.centering==="grand"?" relative to its grand mean":z.L2.key==="w1"&&wc==="grand"?" relative to its grand mean":"")+".</p>")});
+  }
+  exp.push("<h3>Random effects</h3>");
+  exp.push("<p>"+(ri?"The random intercept allows the expected "+outcome+" to vary across "+l2unit.toLowerCase()+"s after accounting for the fixed effects.":"No random intercept is specified.")+"</p>");
+  var rs=[];
+  if(ran)rs.push(q("x").value);
+  extras.forEach(function(z){if(z.p.random)rs.push(z.p.name)});
+  exp.push("<p>"+(rs.length?"Random slopes are specified for "+rs.join(", ")+", allowing these Level 1 associations to vary across "+l2unit.toLowerCase()+"s.":"No random slopes are specified.")+"</p>");
+  if(cov)exp.push("<p>The intercept–slope covariance estimates whether "+l2unit.toLowerCase()+"s with higher expected "+outcome+" values tend to have systematically larger or smaller "+q("x").value+" slopes.</p>");
+  exp.push("<h3>Coefficient guide</h3><p><strong>\\(\\gamma_{00}\\)</strong> is the expected "+outcome+" when all model predictors equal zero after the selected centering. Other \\(\\gamma\\) coefficients represent fixed effects; their exact interpretation depends on the predictor, centering choice, and any interaction in which the predictor participates.</p>");
+  q("explain").innerHTML=exp.join("");
 
-  var rpt="A two-level linear model was specified with "+q("l1").value.toLowerCase()+"s (Level 1) nested within "+q("l2").value.toLowerCase()+"s (Level 2). "+q("y").value+" served as the outcome. "+q("x").value+" was included as a Level 1 predictor.";
-  if(extras.length)rpt+=" Additional Level 1 predictors included "+extras.map(function(z){return z.p.name}).join(", ")+".";
-  rpt+=" "+q("w").value+" was included as a Level 2 predictor."+(l2extras.length?" Additional Level 2 predictors included "+l2extras.map(function(z){return z.p.name}).join(", ")+".":"")+(activeCross.length?" Cross-level interactions were specified such that "+activeCross.map(function(z){return z.L2.name+" predicted the "+z.L1.name+" slope"}).join("; ")+".":"")+(ri?" A random intercept was included.":" No random intercept was included.")+(ran?" The "+q("x").value+" slope was allowed to vary across "+q("l2").value.toLowerCase()+"s.":"");
-  q("report").innerHTML='<h3>Draft for reporting</h3><div class=report>'+rpt+"</div>";
+  var rpt=[];
+  rpt.push("A two-level linear model was specified with "+l1unit.toLowerCase()+"s (Level 1) nested within "+l2unit.toLowerCase()+"s (Level 2), with "+outcome+" as the outcome.");
+  var l1names=[q("x").value].concat(extras.map(function(z){return z.p.name}));
+  rpt.push("Level 1 predictors included "+l1names.join(", ")+".");
+  var centers=[];
+  if(c!=="none")centers.push(q("x").value+" was "+(c==="group"?"group-mean":"grand-mean")+" centered");
+  extras.forEach(function(z){if(z.p.centering!=="none")centers.push(z.p.name+" was "+(z.p.centering==="group"?"group-mean":"grand-mean")+" centered")});
+  if(centers.length)rpt.push(centers.join("; ")+".");
+  var l2names=[q("w").value].concat(l2extras.map(function(z){return z.p.name}));
+  rpt.push("Level 2 predictors included "+l2names.join(", ")+".");
+  if(means.length)rpt.push("The group mean"+(means.length>1?"s":"")+" of "+means.join(", ")+" "+(means.length>1?"were":"was")+" reintroduced at Level 2 to distinguish within- and between-"+l2unit.toLowerCase()+" associations.");
+  if(activeCross.length)rpt.push("Cross-level interaction"+(activeCross.length>1?"s were":" was")+" specified so that "+activeCross.map(function(z){return z.L2.name+" predicted variation in the "+z.L1.name+" slope"}).join("; ")+".");
+  rpt.push(ri?"A random intercept was included to allow baseline "+outcome+" to vary across "+l2unit.toLowerCase()+"s.":"The model did not include a random intercept.");
+  if(rs.length)rpt.push("Random slopes were specified for "+rs.join(", ")+".");
+  else rpt.push("No random slopes were specified.");
+  if(cov)rpt.push("The covariance between the random intercept and the "+q("x").value+" random slope was estimated.");
+  q("report").innerHTML='<h3>Draft for reporting</h3><p class="muted">Review and adapt this text to match your study design, measures, software, and results.</p><div class=report>'+rpt.join(" ")+"</div>";
+
   if(window.MathJax&&MathJax.typesetPromise)MathJax.typesetPromise();
 }
 document.querySelectorAll("input,select").forEach(function(e){e.addEventListener("input",render)});
