@@ -10,10 +10,13 @@ https://chiningchang.github.io/MLM-Equation-Builder/
 
 ## Current Version
 
-Version 1.3 focuses on **two-level linear models with a continuous outcome**.
+Version 2.0 supports **two-level mixed models with continuous or binary (0/1) outcomes**.
 
 ### Features
 
+- Continuous outcomes using two-level linear mixed models
+- Binary (0/1) outcomes using two-level logistic mixed models
+- Bernoulli/logit model equations and odds-ratio interpretation for binary outcomes
 - Multiple Level 1 and Level 2 predictors
 - Grand-mean and group-mean centering
 - Reintroduction of group means at Level 2
@@ -39,7 +42,7 @@ The tool runs entirely in the browser. Model information is processed locally an
 Future versions may include:
 
 - Three-level models
-- Generalized outcomes
+- Additional generalized outcomes (e.g., ordinal, nominal, and count)
 - Additional centering and model-specification options
 - R/lme4 and Mplus syntax generation
 - Additional equation/export formats
