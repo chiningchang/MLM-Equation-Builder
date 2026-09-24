@@ -2,28 +2,31 @@
 
 **Build your multilevel model. Generate equations. Explain and report.**
 
-MLM Equation Builder is a browser-based tool for building multilevel models and automatically generating model equations, variance components, plain-language explanations, and manuscript-ready reporting drafts.
+MLM Equation Builder is a browser-based tool for specifying two-level multilevel linear models and automatically generating model equations, random-effects variance–covariance structures, plain-language explanations, and model-specification reporting drafts.
 
 ## Live Tool
 
 https://chiningchang.github.io/MLM-Equation-Builder/
 
-## Current Prototype
+## Current Version
 
-Version 0.1 focuses on **two-level linear models with a continuous outcome**.
+Version 1.2 focuses on **two-level linear models with a continuous outcome**.
 
 ### Features
 
-- Level 1 and Level 2 model specification
+- Multiple Level 1 and Level 2 predictors
 - Grand-mean and group-mean centering
 - Reintroduction of group means at Level 2
 - Fixed and random slopes
-- Cross-level interactions
-- Random-intercept and random-slope variance components
-- Intercept–slope covariance
-- Hierarchical and combined equations
-- Plain-language model explanations
-- Manuscript reporting drafts
+- Flexible cross-level interactions
+- Random intercepts and multiple random slopes
+- Configurable random-effect covariances
+- Dynamic variance–covariance matrix
+- Hierarchical and combined model equations
+- Coefficient-by-coefficient model explanations
+- Within-group, between-group, contextual-effect, and cross-level interaction guidance
+- Model-specification reporting drafts
+- Copyable LaTeX equations and reporting text
 
 ## Privacy
 
@@ -33,16 +36,16 @@ The tool runs entirely in the browser. Model information is processed locally an
 
 Future versions may include:
 
-- Multiple Level 1 and Level 2 predictors
 - Three-level models
 - Generalized outcomes
-- Additional centering options
-- Equation export
-- R and Mplus syntax generation
+- Additional centering and model-specification options
+- R/lme4 and Mplus syntax generation
+- Additional equation/export formats
+- Model-output parsing and reporting support
 
 ## Intended Use
 
-MLM Equation Builder is designed to support **teaching, model specification, and research reporting**. Generated equations and reporting text should be reviewed by the researcher before use in a manuscript.
+MLM Equation Builder is designed to support **teaching, model specification, and research reporting**. Generated equations, explanations, and reporting text should be reviewed by the researcher before use in a manuscript.
 
 ## Author
 
