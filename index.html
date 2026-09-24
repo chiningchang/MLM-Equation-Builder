@@ -46,14 +46,14 @@ footer{padding:4px 16px 24px!important;font-size:12px!important;line-height:1.5}
 
 <div class="builder-section"><div class="section-title"><h3>4. Cross-Level Interactions</h3><button type="button" class="collapsebtn" aria-label="Toggle section">−</button></div><div class="builder-body"><p class="helper">After defining Level 1 and Level 2 predictors, choose which Level 2 predictor predicts which Level 1 slope.</p>
 <div id="crossList"></div><button type="button" id="addCross" class="addbtn">＋ Add Cross-Level Interaction</button><p id="warn" class="muted" style="display:none;color:#a15c00"></p></div></div>
-<p class="muted">v2.2.3 · Fixed Word copy to use Word-friendly UnicodeMath notation instead of raw LaTeX commands.</p></section><section class="card"><span class="model-tag">Live model output</span><div class="tabs"><button class="on" data-p="equations">Equations</button><button data-p="variance">Variance</button><button data-p="explain">Explanation</button><button data-p="report">Model specification draft</button></div><div id="equations" class="pane"></div><div id="variance" class="pane hide"></div><div id="explain" class="pane hide"></div><div id="report" class="pane hide"></div></section></main><footer style="max-width:1150px;margin:0 auto;padding:0 20px 28px;text-align:center;color:#667085;font-size:13px">Created by Chi-Ning (Nick) Chang, Ph.D. · Virginia Commonwealth University · <a href="mailto:changc10@vcu.edu" style="color:inherit">changc10@vcu.edu</a></footer><script>
+<p class="muted">v2.2.4 · Fixed add-variable controls after the Word-copy update and hardened equation rendering.</p></section><section class="card"><span class="model-tag">Live model output</span><div class="tabs"><button class="on" data-p="equations">Equations</button><button data-p="variance">Variance</button><button data-p="explain">Explanation</button><button data-p="report">Model specification draft</button></div><div id="equations" class="pane"></div><div id="variance" class="pane hide"></div><div id="explain" class="pane hide"></div><div id="report" class="pane hide"></div></section></main><footer style="max-width:1150px;margin:0 auto;padding:0 20px 28px;text-align:center;color:#667085;font-size:13px">Created by Chi-Ning (Nick) Chang, Ph.D. · Virginia Commonwealth University · <a href="mailto:changc10@vcu.edu" style="color:inherit">changc10@vcu.edu</a></footer><script>
 var q=function(i){return document.getElementById(i)};
 var clean=function(s){return s.replace(/[^A-Za-z0-9]/g,"")||"X"};
 var tv=function(s){return "\\mathrm{"+clean(s)+"}"};
 var extraL1=[], extraL2=[], crosses=[], covPairs={}, nextId=2, nextL2Id=2, nextCrossId=1;
 
 function addL1(name){
-  if(!q("useL1").checked){q("useL1").checked=true;q("primaryL1").style.display="block";drawCross();drawRandomEffects();render();return}
+  if(!q("useL1").checked){q("useL1").checked=true;q("primaryL1").style.display="block";q("warn").style.display="none";drawExtra();drawCross();drawRandomEffects();render();return}
   extraL1.push({id:nextId++,name:name||("Predictor "+nextId),centering:"none",random:false,re:false});
   drawExtra(); drawCross(); drawRandomEffects(); render();
 }
@@ -81,7 +81,7 @@ function term(P,c){
   return P+"_{ij}";
 }
 function addL2(name){
-  if(!q("useL2").checked){q("useL2").checked=true;q("primaryL2").style.display="block";drawCross();render();return}
+  if(!q("useL2").checked){q("useL2").checked=true;q("primaryL2").style.display="block";q("warn").style.display="none";drawExtraL2();drawCross();render();return}
   extraL2.push({id:nextL2Id++,name:name||("Level 2 Predictor "+nextL2Id),centering:"none"});
   drawExtraL2(); drawCross(); render();
 }
@@ -291,7 +291,7 @@ function render(){
   var ce=q("copyEq");if(ce)ce.onclick=function(){copyText(latexTxt,ce,"Copy LaTeX")};
   var cw=q("copyWord");if(cw)cw.onclick=function(){var wordTxt="Level 1:\n"+(binary?wordLinear(Y+"_{ij}\\sim \\operatorname{Bernoulli}(\\pi_{ij})")+"\n":"")+wordLinear(eqLines[0])+"\n\nLevel 2:\n"+eqLines.slice(1).map(wordLinear).join("\n")+"\n\nCombined model:\n"+wordLinear(comb);copyText(wordTxt,cw,"Copy for Word")};
   var cv=q("copyVar");if(cv)cv.onclick=function(){copyText(varianceLines.join("\n\n"),cv,"Copy LaTeX")};var cvw=q("copyVarWord");if(cvw)cvw.onclick=function(){copyText(varianceLines.map(wordLinear).join("\n\n"),cvw,"Copy for Word")};var cr=q("copyReport");if(cr)cr.onclick=function(){copyText(rpt.join(" "),cr,"Copy draft")};
-  if(window.MathJax&&MathJax.typesetPromise)MathJax.typesetPromise();
+  if(window.MathJax&&typeof MathJax.typesetPromise==="function"){MathJax.typesetPromise().catch(function(){})}
 }
 document.querySelectorAll("input,select").forEach(function(e){e.addEventListener("input",render)});
 document.querySelectorAll(".tabs button").forEach(function(b){b.onclick=function(){document.querySelectorAll(".tabs button").forEach(function(x){x.classList.remove("on")});document.querySelectorAll(".pane").forEach(function(x){x.classList.add("hide")});b.classList.add("on");q(b.dataset.p).classList.remove("hide")}});
