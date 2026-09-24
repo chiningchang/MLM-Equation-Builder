@@ -1,4 +1,6 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MLM Equation Builder</title><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script><script defer src="https://unpkg.com/docx@9.7.1/dist/index.iife.js"></script><style>body{margin:0;font:15px system-ui;background:#eef2f7;color:#111827}header{padding:28px;max-width:1150px;margin:auto}main{max-width:1150px;margin:auto;padding:0 20px 30px;display:grid;grid-template-columns:380px 1fr;gap:20px}.card{background:white;border:1px solid #cfd6e2;border-radius:14px;padding:20px}h1{margin:0}p{line-height:1.55}.muted{color:#4b5565}label{display:block;font-weight:650;margin:12px 0 5px}input,select{width:100%;box-sizing:border-box;padding:10px;border:1px solid #aeb8c8;border-radius:8px;font:inherit}.check{display:flex;gap:8px;align-items:center;font-weight:400}.check input{width:auto}.tabs{display:flex;gap:6px;flex-wrap:wrap}.tabs button{border:0;border-radius:8px;padding:9px;background:#e9edf3;color:#263244;cursor:pointer}.tabs .on{background:#dbe5ff;color:#173f9b}.pane{margin-top:18px}.hide{display:none}.eq{font-size:18px;overflow-x:auto;text-align:left}.eq mjx-container[display="true"]{text-align:left!important;margin-left:0!important;margin-right:0!important}.report{background:#f3f6fa;padding:14px;border-radius:10px}@media(max-width:800px){main{grid-template-columns:1fr}}button{transition:.15s ease}.addbtn{width:100%;padding:11px 12px;border:1px solid #7185b3;border-radius:9px;background:#eef3ff;color:#173f9b;cursor:pointer;font:inherit;font-weight:650}.addbtn:hover{background:#dfe8ff}.builder-section{margin-top:22px;padding-top:18px;border-top:1px solid #cfd6e2}.builder-section h3{margin:0 0 5px}.section-title{display:flex;justify-content:space-between;align-items:center}.collapsebtn{display:none;border:0;background:none;font:inherit;color:#667085;padding:6px;cursor:pointer}.helper{margin:0 0 12px;color:#4b5565;font-size:13px;line-height:1.45}.extra-p,.extra-l2,.cross-card{background:#f6f8fb}.remove-p,.remove-l2,.remove-cross{font-size:13px}.tabs{border-bottom:1px solid #cfd6e2;padding-bottom:8px}.tabs button{font-weight:600}.pane h3{margin-top:20px}.copyrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.copybtn{margin-top:0;padding:8px 11px;border:1px solid #ccd2dc;border-radius:8px;background:white;cursor:pointer;font:inherit;font-weight:600}.copybtn:hover{background:#f8fafc}.model-tag{display:inline-block;font-size:12px;font-weight:650;padding:4px 8px;border-radius:999px;background:#dbe5ff;color:#173f9b;margin-bottom:10px}@media(max-width:800px){
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MLM Equation Builder</title><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script><script defer src="https://unpkg.com/docx@9.7.1/dist/index.iife.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script defer src="word-template.js"></script><style>body{margin:0;font:15px system-ui;background:#eef2f7;color:#111827}header{padding:28px;max-width:1150px;margin:auto}main{max-width:1150px;margin:auto;padding:0 20px 30px;display:grid;grid-template-columns:380px 1fr;gap:20px}.card{background:white;border:1px solid #cfd6e2;border-radius:14px;padding:20px}h1{margin:0}p{line-height:1.55}.muted{color:#4b5565}label{display:block;font-weight:650;margin:12px 0 5px}input,select{width:100%;box-sizing:border-box;padding:10px;border:1px solid #aeb8c8;border-radius:8px;font:inherit}.check{display:flex;gap:8px;align-items:center;font-weight:400}.check input{width:auto}.tabs{display:flex;gap:6px;flex-wrap:wrap}.tabs button{border:0;border-radius:8px;padding:9px;background:#e9edf3;color:#263244;cursor:pointer}.tabs .on{background:#dbe5ff;color:#173f9b}.pane{margin-top:18px}.hide{display:none}.eq{font-size:18px;overflow-x:auto;text-align:left}.eq mjx-container[display="true"]{text-align:left!important;margin-left:0!important;margin-right:0!important}.report{background:#f3f6fa;padding:14px;border-radius:10px}@media(max-width:800px){main{grid-template-columns:1fr}}button{transition:.15s ease}.addbtn{width:100%;padding:11px 12px;border:1px solid #7185b3;border-radius:9px;background:#eef3ff;color:#173f9b;cursor:pointer;font:inherit;font-weight:650}.addbtn:hover{background:#dfe8ff}.builder-section{margin-top:22px;padding-top:18px;border-top:1px solid #cfd6e2}.builder-section h3{margin:0 0 5px}.section-title{display:flex;justify-content:space-between;align-items:center}.collapsebtn{display:none;border:0;background:none;font:inherit;color:#667085;padding:6px;cursor:pointer}.helper{margin:0 0 12px;color:#4b5565;font-size:13px;line-height:1.45}.extra-p,.extra-l2,.cross-card{background:#f6f8fb}.remove-p,.remove-l2,.remove-cross{font-size:13px}.tabs{border-bottom:1px solid #cfd6e2;padding-bottom:8px}.tabs button{font-weight:600}.pane h3{margin-top:20px}.copyrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.copybtn{margin-top:0;padding:8px 11px;border:1px solid #ccd2dc;border-radius:8px;background:white;cursor:pointer;font:inherit;font-weight:600}.copybtn:hover{background:#f8fafc}.model-tag{display:inline-block;font-size:12px;font-weight:650;padding:4px 8px;border-radius:999px;background:#dbe5ff;color:#173f9b;margin-bottom:10px}@media(max-width:800px){
 .collapsebtn{display:block;font-size:18px}
 .builder-body.collapsed{display:none}
 body{font-size:16px;background:#e9eef5}
@@ -329,48 +331,96 @@ function render(){
   var ce=q("copyEq");if(ce)ce.onclick=function(){copyText(latexTxt,ce,"Copy LaTeX")};
   var cw=q("copyWord");if(cw)cw.onclick=function(){var wordTxt="Level 1:\n"+(binary?wordLinear(Y+"_{ij}\\sim \\operatorname{Bernoulli}(\\pi_{ij})")+"\n":"")+wordLinear(eqLines[0])+"\n\nLevel 2:\n"+eqLines.slice(1).map(wordLinear).join("\n")+"\n\nCombined model:\n"+wordLinear(comb);copyText(wordTxt,cw,"Copy for Word")};
   var cv=q("copyVar");if(cv)cv.onclick=function(){copyText(varianceLines.join("\n\n"),cv,"Copy LaTeX")};var cvw=q("copyVarWord");if(cvw)cvw.onclick=function(){copyText(varianceLines.map(wordLinear).join("\n\n"),cvw,"Copy for Word")};var dw=q("downloadDocx");if(dw)dw.onclick=async function(){
-    if(!window.docx){dw.textContent="Word export unavailable";setTimeout(function(){dw.textContent="Download Word (.docx)"},1800);return}
-    var D=window.docx,children=[];
-    children.push(new D.Paragraph({heading:D.HeadingLevel.TITLE,children:[new D.TextRun("Multilevel Model Equations")]}));
-    children.push(new D.Paragraph({children:[new D.TextRun("Generated by MLM Equation Builder")]}));
-    children.push(docxHeading("Level 1",D.HeadingLevel.HEADING_1));
-    if(binary)children.push(docxMathParagraph(Y+"_{ij}\\sim \\operatorname{Bernoulli}(\\pi_{ij})"));
-    children.push(docxMathParagraph(l1));
-    children.push(docxHeading("Level 2",D.HeadingLevel.HEADING_1));
-    children.push(docxMathParagraph(b0));
-    if(hasL1)children.push(docxMathParagraph(b1));
-    extras.forEach(function(z){
-      var ss="\\beta_{"+z.beta+"j}=\\gamma_{"+z.beta+"0}";
-      activeCross.filter(function(a){return a.L1.beta===z.beta}).forEach(function(a){ss+="+\\gamma_{"+z.beta+a.gidx+"}"+a.L2.t});
-      if(z.p.random)ss+="+u_{"+z.beta+"j}";
-      children.push(docxMathParagraph(ss));
-    });
-    children.push(docxHeading("Combined model",D.HeadingLevel.HEADING_1));
-    children.push(docxMathParagraph(comb));
-    children.push(docxHeading("Variance and covariance",D.HeadingLevel.HEADING_1));
-    if(!binary)children.push(docxMathParagraph("r_{ij}\\sim N(0,\\sigma^2)"));
-    if(randomMeta.length){
-      children.push(new D.Paragraph({children:[new D.TextRun({text:"Random-effects variance–covariance matrix",bold:true})]}));
-      var tableRows=[new D.TableRow({children:[new D.TableCell({children:[new D.Paragraph("")]})].concat(randomMeta.map(function(z){return new D.TableCell({children:[docxMathParagraph(z.label)]})}))})];
-      randomMeta.forEach(function(A,i){
-        var cells=[new D.TableCell({children:[docxMathParagraph(A.label)]})];
-        randomMeta.forEach(function(B,j){
-          var val;if(i===j)val="\\tau_{"+A.idx+A.idx+"}";
-          else{var key=[A.key,B.key].sort().join("|"),ii=Math.min(+A.idx,+B.idx),jj=Math.max(+A.idx,+B.idx);val=covPairs[key]?"\\tau_{"+ii+jj+"}":"0"}
-          cells.push(new D.TableCell({children:[docxMathParagraph(val)]}));
-        });
-        tableRows.push(new D.TableRow({children:cells}));
+    if(!window.JSZip||!window.MLM_WORD_TEMPLATE){dw.textContent="Word export unavailable";setTimeout(function(){dw.textContent="Download Word (.docx)"},1800);return}
+    var escXml=function(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")};
+    var mr=function(t){return '<m:r><m:t>'+escXml(t)+'</m:t></m:r>'};
+    var sub=function(base,s){return '<m:sSub><m:e>'+base+'</m:e><m:sub>'+mr(s)+'</m:sub></m:sSub>'};
+    var vr=function(n,s){return s?sub(mr(n),s):mr(n)};
+    var mean=function(n,s){var z='<m:bar><m:barPr><m:pos m:val="top"/></m:barPr><m:e>'+mr(n)+'</m:e></m:bar>';return s?sub(z,s):z};
+    var gr=function(g,s){return s?sub(mr(g),s):mr(g)};
+    var centered=function(n,s,k){return k==="none"?[vr(n,s)]:[mr("("),vr(n,s),mr(" − "),k==="group"?mean(n,"·j"):mean(n),mr(")")]};
+    var mathP=function(parts){return '<w:p><m:oMath>'+parts.join("")+'</m:oMath></w:p>'};
+    var textP=function(t){return '<w:p><w:r><w:t>'+escXml(t)+'</w:t></w:r></w:p>'};
+    var heading=function(t,lev){return '<w:p><w:pPr><w:pStyle w:val="'+(lev||"Heading1")+'"/></w:pPr><w:r><w:t>'+escXml(t)+'</w:t></w:r></w:p>'};
+    var matrix=function(meta){
+      var mm='<m:m><m:mPr><m:baseJc m:val="center"/><m:mcs>';
+      meta.forEach(function(){mm+='<m:mc><m:mcPr><m:count m:val="1"/><m:mcJc m:val="center"/></m:mcPr></m:mc>'});
+      mm+='</m:mcs></m:mPr>';
+      meta.forEach(function(A,i){mm+='<m:mr>';meta.forEach(function(B,j){var z;if(i===j)z=gr("τ",A.idx+A.idx);else{var key=[A.key,B.key].sort().join("|"),ii=Math.min(+A.idx,+B.idx),jj=Math.max(+A.idx,+B.idx);z=covPairs[key]?gr("τ",String(ii)+String(jj)):mr("0")}mm+='<m:e>'+mr("  ")+z+mr("  ")+'</m:e>'});mm+='</m:mr>'});
+      mm+='</m:m>';
+      return '<m:d><m:dPr><m:begChr m:val="["/><m:endChr m:val="]"/><m:sepChr m:val=""/></m:dPr><m:e>'+mm+'</m:e></m:d>';
+    };
+    var rawX=q("x").value,rawW=q("w").value,rawY=q("y").value;
+    var rawExtras=extras.map(function(z){return {z:z,name:z.p.name,beta:z.beta,centering:z.p.centering,re:z.p.re,random:z.p.random}});
+    var rawL2=l2extras.map(function(z){return {z:z,name:z.p.name,centering:z.p.centering}});
+    var l1parts=binary?[mr("logit("),vr("π","ij"),mr(") = "),gr("β","0j")]:[vr(rawY,"ij"),mr(" = "),gr("β","0j")];
+    if(hasL1)l1parts.push(mr(" + "),gr("β","1j"),...centered(rawX,"ij",c));
+    rawExtras.forEach(function(z){l1parts.push(mr(" + "),gr("β",z.beta+"j"),...centered(z.name,"ij",z.centering))});
+    if(!binary)l1parts.push(mr(" + "),vr("r","ij"));
+    var b0parts=[gr("β","0j"),mr(" = "),gr("γ","00")],gg=1;
+    if(re){b0parts.push(mr(" + "),gr("γ","0"+gg),mean(rawX,"·j"));gg++}
+    rawExtras.forEach(function(z){if(z.centering==="group"&&z.re){b0parts.push(mr(" + "),gr("γ","0"+gg),mean(z.name,"·j"));gg++}});
+    if(hasL2){b0parts.push(mr(" + "),gr("γ","0"+gg),...centered(rawW,"j",wc));gg++}
+    rawL2.forEach(function(z){b0parts.push(mr(" + "),gr("γ","0"+gg),...centered(z.name,"j",z.centering));gg++});
+    if(ri)b0parts.push(mr(" + "),vr("u","0j"));
+    var slopeParts=[];
+    l1all.forEach(function(L){
+      var sp=[gr("β",L.beta+"j"),mr(" = "),gr("γ",L.beta+"0")];
+      activeCross.filter(function(a){return a.L1.beta===L.beta}).forEach(function(a){
+        var nm=a.L2.key==="w1"?rawW:(extraL2.find(function(p){return "w"+p.id===a.L2.key})||{}).name||a.L2.name;
+        var cc=a.L2.key==="w1"?wc:(extraL2.find(function(p){return "w"+p.id===a.L2.key})||{}).centering||"none";
+        sp.push(mr(" + "),gr("γ",String(L.beta)+String(a.gidx)),...centered(nm,"j",cc));
       });
-      children.push(new D.Table({rows:tableRows,width:{size:100,type:D.WidthType.PERCENTAGE}}));
-      randomMeta.forEach(function(z){children.push(docxMathParagraph("\\operatorname{Var}("+z.label+")=\\tau_{"+z.idx+z.idx+"}"))});
-      chosen.forEach(function(z){var ii=Math.min(+z.A.idx,+z.B.idx),jj=Math.max(+z.A.idx,+z.B.idx);children.push(docxMathParagraph("\\operatorname{Cov}("+z.A.label+","+z.B.label+")=\\tau_{"+ii+jj+"}"))});
+      if(L.random)sp.push(mr(" + "),vr("u",L.beta+"j"));
+      slopeParts.push(sp);
+    });
+    var combined=[];
+    var first=binary?[mr("logit("),vr("π","ij"),mr(") = "),gr("γ","00")]:[vr(rawY,"ij"),mr(" = "),gr("γ","00")];
+    var giw=1;if(re){first.push(mr(" + "),gr("γ","0"+giw),mean(rawX,"·j"));giw++}
+    rawExtras.forEach(function(z){if(z.centering==="group"&&z.re){first.push(mr(" + "),gr("γ","0"+giw),mean(z.name,"·j"));giw++}});
+    combined.push(first);
+    if(hasL2){combined.push([mr("+ "),gr("γ","0"+giw),...centered(rawW,"j",wc)]);giw++}
+    rawL2.forEach(function(z){combined.push([mr("+ "),gr("γ","0"+giw),...centered(z.name,"j",z.centering)]);giw++});
+    l1all.forEach(function(L){
+      var nm=L.key==="x1"?rawX:(extraL1.find(function(p){return "x"+p.id===L.key})||{}).name||L.name;
+      var cc=L.key==="x1"?c:(extraL1.find(function(p){return "x"+p.id===L.key})||{}).centering||"none";
+      combined.push([mr("+ "),gr("γ",L.beta+"0"),...centered(nm,"ij",cc)]);
+      activeCross.filter(function(a){return a.L1.beta===L.beta}).forEach(function(a){
+        var wn=a.L2.key==="w1"?rawW:(extraL2.find(function(p){return "w"+p.id===a.L2.key})||{}).name||a.L2.name;
+        var wcc=a.L2.key==="w1"?wc:(extraL2.find(function(p){return "w"+p.id===a.L2.key})||{}).centering||"none";
+        combined.push([mr("+ "),gr("γ",String(L.beta)+String(a.gidx)),...centered(wn,"j",wcc),...centered(nm,"ij",cc)]);
+      });
+    });
+    var rand=[];if(ri)rand.push(mr("+ "),vr("u","0j"));
+    l1all.forEach(function(L){if(L.random){var nm=L.key==="x1"?rawX:(extraL1.find(function(p){return "x"+p.id===L.key})||{}).name||L.name;var cc=L.key==="x1"?c:(extraL1.find(function(p){return "x"+p.id===L.key})||{}).centering||"none";rand.push(mr(rand.length?" + ":"+ "),vr("u",L.beta+"j"),...centered(nm,"ij",cc))}});
+    if(!binary)rand.push(mr(rand.length?" + ":"+ "),vr("r","ij"));if(rand.length)combined.push(rand);
+    var body=[];
+    body.push('<w:p><w:pPr><w:pStyle w:val="Title"/></w:pPr><w:r><w:t>Multilevel Model Equations</w:t></w:r></w:p>');
+    body.push(textP("Generated by MLM Equation Builder"));
+    body.push(heading("Level 1"));if(binary)body.push(mathP([vr(rawY,"ij"),mr(" ~ Bernoulli("),vr("π","ij"),mr(")")]));
+    body.push(mathP(l1parts));body.push(heading("Level 2"));body.push(mathP(b0parts));slopeParts.forEach(function(z){body.push(mathP(z))});
+    body.push(heading("Combined model"));combined.forEach(function(z){body.push(mathP(z))});
+    body.push(heading("Variance and covariance"));
+    body.push(heading("Level 2 random effects","Heading2"));
+    body.push(textP(randomMeta.length?"The model includes "+randomMeta.map(function(z){return z.name}).join(", ")+".":"No Level 2 random effects selected."));
+    if(binary){body.push(heading("Level 1 distribution","Heading2"));body.push(textP("For a binary logistic model, the Level 1 outcome follows a Bernoulli distribution and a separate residual variance (σ²) is not estimated."))}
+    else{body.push(heading("Level 1 residual variance","Heading2"));body.push(mathP([vr("r","ij"),mr(" ~ N(0, "),mr("σ²"),mr(")")]))}
+    if(randomMeta.length){
+      body.push(heading("Variance–covariance matrix","Heading2"));body.push(mathP([mr("G = "),matrix(randomMeta)]));
+      body.push(heading("Variance components","Heading2"));
+      randomMeta.forEach(function(z){body.push(mathP([mr("Var("),vr("u",z.idx+"j"),mr(") = "),gr("τ",z.idx+z.idx)]))});
+      chosen.forEach(function(z){var ii=Math.min(+z.A.idx,+z.B.idx),jj=Math.max(+z.A.idx,+z.B.idx);body.push(mathP([mr("Cov("),vr("u",z.A.idx+"j"),mr(", "),vr("u",z.B.idx+"j"),mr(") = "),gr("τ",String(ii)+String(jj))]))});
+      if(!chosen.length)body.push(textP("No random-effect covariances are selected."));
     }
-    children.push(docxHeading("Model specification draft",D.HeadingLevel.HEADING_1));
-    children.push(new D.Paragraph({children:[new D.TextRun(rpt.join(" "))]}));
-    children.push(docxHeading("Suggested citation",D.HeadingLevel.HEADING_1));
-    children.push(new D.Paragraph({children:[new D.TextRun("Chang, C. N. (2026). MLM Equation Builder [Web application]. https://chiningchang.github.io/MLM-Equation-Builder/")]}));
-    var doc=new D.Document({creator:"MLM Equation Builder",title:"Multilevel Model Equations",sections:[{properties:{page:{margin:{top:720,right:720,bottom:720,left:720}}},children:children}]});
-    var blob=await D.Packer.toBlob(doc);saveBlob(blob,"MLM-Model-Equations.docx");
+    body.push(heading("Model specification draft"));body.push(textP(rpt.join(" ")));
+    body.push(heading("Suggested citation"));body.push(textP("Chang, C. N. (2026). MLM Equation Builder [Web application]. https://chiningchang.github.io/MLM-Equation-Builder/"));
+    var xml='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math"><w:body>'+body.join("")+'<w:sectPr><w:pgSz w:w="12240" w:h="15840"/><w:pgMar w:top="720" w:right="720" w:bottom="720" w:left="720"/></w:sectPr></w:body></w:document>';
+    try{
+      var zip=new JSZip(),dec=function(s){return Uint8Array.from(atob(s),function(ch){return ch.charCodeAt(0)})};
+      Object.keys(window.MLM_WORD_TEMPLATE).forEach(function(n){zip.file(n,dec(window.MLM_WORD_TEMPLATE[n]))});
+      zip.file("word/document.xml",xml);
+      var blob=await zip.generateAsync({type:"blob",compression:"DEFLATE"});saveBlob(blob,"MLM-Model-Equations.docx");
+    }catch(e){console.error(e);dw.textContent="Word export failed";setTimeout(function(){dw.textContent="Download Word (.docx)"},1800)}
   };
   var cr=q("copyReport");if(cr)cr.onclick=function(){copyText(rpt.join(" "),cr,"Copy draft")};
   if(window.MathJax&&MathJax.typesetPromise)MathJax.typesetPromise();
