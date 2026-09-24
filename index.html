@@ -170,7 +170,9 @@ function wordLinear(tex){
 }
 function docxMathParts(tex){
   var D=window.docx;if(!D)return [];
-  var t=tex
+  var bars=[],mark="\uE000";
+  var t=tex.replace(/\\bar\{([^{}]+)\}/g,function(_,x){var i=bars.length;bars.push(x);return mark+i+mark});
+  t=t
     .replace(/\\operatorname\{([^{}]+)\}/g,"$1")
     .replace(/\\mathrm\{([^{}]+)\}/g,"$1")
     .replace(/\\left|\\right/g,"")
@@ -178,15 +180,18 @@ function docxMathParts(tex){
     .replace(/\\cdot/g,"·")
     .replace(/\\sim/g,"~")
     .replace(/\\gamma/g,"γ").replace(/\\beta/g,"β").replace(/\\tau/g,"τ")
-    .replace(/\\sigma/g,"σ").replace(/\\pi/g,"π")
-    .replace(/\\bar\{([^{}]+)\}/g,function(_,x){return Array.from(x).map(function(ch){return ch+"̅"}).join("")});
-  var out=[],re=/([A-Za-zΑ-ω]+(?:̅[A-Za-zΑ-ω̅]*)?|[γβτσπ]|[^A-Za-zΑ-ωγβτσπ_\\^]+)(?:_\{([^{}]+)\})?(?:\^\{?([^{}+\- ]+)\}?)?/g,m;
+    .replace(/\\sigma/g,"σ").replace(/\\pi/g,"π");
+  var out=[],re=new RegExp("("+mark+"(\\d+)"+mark+"|[A-Za-zΑ-ω]+|[γβτσπ]|[^A-Za-zΑ-ωγβτσπ_\\\\^"+mark+"]+)(?:_\\{([^{}]+)\\})?(?:\\^\\{?([^{}+\\- ]+)\\}?)?","g"),m;
   while((m=re.exec(t))){
-    var base=m[1],sub=m[2],sup=m[3];
-    if(sub&&sup)out.push(new D.MathSubSuperScript({children:[new D.MathRun(base)],subScript:[new D.MathRun(sub.replace(/\\cdot/g,"·"))],superScript:[new D.MathRun(sup)]}));
-    else if(sub)out.push(new D.MathSubScript({children:[new D.MathRun(base)],subScript:[new D.MathRun(sub.replace(/\\cdot/g,"·"))]}));
-    else if(sup)out.push(new D.MathSuperScript({children:[new D.MathRun(base)],superScript:[new D.MathRun(sup)]}));
-    else out.push(new D.MathRun(base));
+    var base=m[1],barIndex=m[2],sub=m[3],sup=m[4],baseNode;
+    if(barIndex!==undefined){
+      var x=bars[+barIndex];
+      baseNode=new D.MathBar({children:[new D.MathRun(x)]});
+    }else baseNode=new D.MathRun(base);
+    if(sub&&sup)out.push(new D.MathSubSuperScript({children:[baseNode],subScript:[new D.MathRun(sub.replace(/\\cdot/g,"·"))],superScript:[new D.MathRun(sup)]}));
+    else if(sub)out.push(new D.MathSubScript({children:[baseNode],subScript:[new D.MathRun(sub.replace(/\\cdot/g,"·"))]}));
+    else if(sup)out.push(new D.MathSuperScript({children:[baseNode],superScript:[new D.MathRun(sup)]}));
+    else out.push(baseNode);
   }
   return out;
 }
