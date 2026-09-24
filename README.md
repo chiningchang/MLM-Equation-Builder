@@ -4,6 +4,10 @@
 
 MLM Equation Builder is a browser-based tool for building multilevel models and automatically generating model equations, variance components, plain-language explanations, and manuscript-ready reporting drafts.
 
+## Live Tool
+
+https://chiningchang.github.io/MLM-Equation-Builder/
+
 ## Current Prototype
 
 Version 0.1 focuses on **two-level linear models with a continuous outcome**.
