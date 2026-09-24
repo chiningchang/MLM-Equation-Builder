@@ -10,14 +10,16 @@ https://chiningchang.github.io/MLM-Equation-Builder/
 
 ## Current Version
 
-Version 2.1 supports **two-level mixed models with continuous or binary (0/1) outcomes**.
+Version 2.2 supports **two-level mixed models with continuous or binary (0/1) outcomes**.
 
 ### Features
 
 - Continuous outcomes using two-level linear mixed models
 - Binary (0/1) outcomes using two-level logistic mixed models
 - Bernoulli/logit model equations and odds-ratio interpretation for binary outcomes
-- Explicit event (Y = 1) labeling for binary outcomes
+- Explicit event (Y = 1) labeling and logit-link guidance for binary outcomes
+- Centering-aware intercept and slope interpretation
+- Unconditional (intercept-only) models with zero predictors
 - Multiple Level 1 and Level 2 predictors
 - Grand-mean and group-mean centering
 - Reintroduction of group means at Level 2
