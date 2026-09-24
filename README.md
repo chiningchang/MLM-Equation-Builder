@@ -42,4 +42,6 @@ MLM Equation Builder is designed to support **teaching, model specification, and
 
 ## Author
 
-**Chi-Ning Chang**
+**Chi-Ning (Nick) Chang, Ph.D.**  
+Associate Professor  
+Virginia Commonwealth University
