@@ -168,10 +168,9 @@ function wordLinear(tex){
   out=out.replace(/\^\{([^{}]+)\}/g,"^($1)");
   return out;
 }
-function docxXmlEsc(text){return String(text).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
-function docxNativeRun(text){return "<m:r><m:t>"+docxXmlEsc(text)+"</m:t></m:r>"}
-function docxNativeSub(base,sub){return "<m:sSub><m:e>"+base+"</m:e><m:sub>"+docxNativeRun(sub)+"</m:sub></m:sSub>"}
-function docxNativeBar(text){return '<m:bar><m:barPr><m:pos m:val="top"/></m:barPr><m:e>'+docxNativeRun(text)+"</m:e></m:bar>"}
+function docxNativeRun(text){var D=window.docx;return new D.MathRun(text)}
+function docxNativeSub(base,sub){var D=window.docx;return new D.MathSubScript({children:[base],subScript:[new D.MathRun(sub)]})}
+function docxNativeBar(text){var D=window.docx;return new D.MathBar({children:[new D.MathRun(text)]})}
 function docxNativeVar(name,sub){return sub?docxNativeSub(docxNativeRun(name),sub):docxNativeRun(name)}
 function docxNativeMean(name,sub){var x=docxNativeBar(name);return sub?docxNativeSub(x,sub):x}
 function docxNativeGreek(ch,sub){return sub?docxNativeSub(docxNativeRun(ch),sub):docxNativeRun(ch)}
@@ -183,9 +182,8 @@ function docxNativeCentered(name,sub,center,groupSub){
   a.push(docxNativeRun(")"));return a;
 }
 function docxNativeParagraph(parts,indent){
-  var D=window.docx,xml='<m:oMath xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math">'+parts.join("")+"</m:oMath>";
-  var math=D.ImportedXmlComponent.fromXmlString(xml);
-  return new D.Paragraph({indent:indent?{left:360}:undefined,spacing:{after:100},children:[math]});
+  var D=window.docx;
+  return new D.Paragraph({indent:indent?{left:360}:undefined,spacing:{after:100},children:[new D.Math({children:parts})]});
 }
 function docxMathParts(tex){
   var D=window.docx;if(!D)return [];
