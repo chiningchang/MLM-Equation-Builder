@@ -10,7 +10,7 @@ https://chiningchang.github.io/MLM-Equation-Builder/
 
 ## Current Version
 
-Version 1.2 focuses on **two-level linear models with a continuous outcome**.
+Version 1.3 focuses on **two-level linear models with a continuous outcome**.
 
 ### Features
 
@@ -27,6 +27,8 @@ Version 1.2 focuses on **two-level linear models with a continuous outcome**.
 - Within-group, between-group, contextual-effect, and cross-level interaction guidance
 - Model-specification reporting drafts
 - Copyable LaTeX equations and reporting text
+- Word-friendly equation copy workflow
+- Mobile-optimized controls and equation viewing
 
 ## Privacy
 
