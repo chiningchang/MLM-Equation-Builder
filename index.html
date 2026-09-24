@@ -28,7 +28,7 @@ input,select{min-height:48px;font-size:16px;padding:11px 12px;background:#fff}
 .copybtn{min-height:48px;width:100%;font-size:15px}
 .report{font-size:15px;line-height:1.65}
 footer{padding:4px 16px 24px!important;font-size:12px!important;line-height:1.5}
-}input:focus,select:focus,button:focus-visible{outline:3px solid #7da2ff;outline-offset:2px;border-color:#315fc5}.tabs button:hover{background:#dde3ec}.tabs .on:hover{background:#d1ddfb}</style></head><body><header><h1>MLM Equation Builder</h1><p class="muted">Build your multilevel model. Generate equations, explanations, and reporting text.</p></header><main><section class="card"><h2>Build your model</h2><label>Outcome</label><input id="y" value="Math Achievement"><label>Outcome type</label><select id="outcomeType"><option value="continuous" selected>Continuous</option><option value="binary">Binary (0/1)</option></select><p id="outcomeHelp" class="helper">Two-level linear mixed model.</p><label>Level 1 unit</label><input id="l1" value="Student"><label>Level 2 unit</label><input id="l2" value="School">
+}input:focus,select:focus,button:focus-visible{outline:3px solid #7da2ff;outline-offset:2px;border-color:#315fc5}.tabs button:hover{background:#dde3ec}.tabs .on:hover{background:#d1ddfb}</style></head><body><header><h1>MLM Equation Builder</h1><p class="muted">Build your multilevel model. Generate equations, explanations, and reporting text.</p></header><main><section class="card"><h2>Build your model</h2><label>Outcome</label><input id="y" value="Math Achievement"><label>Outcome type</label><select id="outcomeType"><option value="continuous" selected>Continuous</option><option value="binary">Binary (0/1)</option></select><p id="outcomeHelp" class="helper">Two-level linear mixed model.</p><div id="eventWrap" style="display:none"><label>Event coded as 1</label><input id="eventLabel" value="Event"><p class="helper">Name the outcome category represented by Y = 1 (for example, Retained or Passed).</p></div><label>Level 1 unit</label><input id="l1" value="Student"><label>Level 2 unit</label><input id="l2" value="School">
 
 <div class="builder-section"><div class="section-title"><h3>1. Level 1 Predictors</h3><button type="button" class="collapsebtn" aria-label="Toggle section">−</button></div><div class="builder-body"><p class="helper">Add Level 1 predictors and choose how each is centered.</p>
 <label>Primary Level 1 predictor</label><input id="x" value="SES">
@@ -46,7 +46,7 @@ footer{padding:4px 16px 24px!important;font-size:12px!important;line-height:1.5}
 
 <div class="builder-section"><div class="section-title"><h3>4. Cross-Level Interactions</h3><button type="button" class="collapsebtn" aria-label="Toggle section">−</button></div><div class="builder-body"><p class="helper">After defining Level 1 and Level 2 predictors, choose which Level 2 predictor predicts which Level 1 slope.</p>
 <div id="crossList"></div><button type="button" id="addCross" class="addbtn">＋ Add Cross-Level Interaction</button><p id="warn" class="muted" style="display:none;color:#a15c00"></p></div></div>
-<p class="muted">v2.0 · Added binary (0/1) outcomes with two-level logistic mixed-model equations, interpretation, variance handling, and reporting.</p></section><section class="card"><span class="model-tag">Live model output</span><div class="tabs"><button class="on" data-p="equations">Equations</button><button data-p="variance">Variance</button><button data-p="explain">Explanation</button><button data-p="report">Model specification draft</button></div><div id="equations" class="pane"></div><div id="variance" class="pane hide"></div><div id="explain" class="pane hide"></div><div id="report" class="pane hide"></div></section></main><footer style="max-width:1150px;margin:0 auto;padding:0 20px 28px;text-align:center;color:#667085;font-size:13px">Created by Chi-Ning (Nick) Chang, Ph.D. · Virginia Commonwealth University · <a href="mailto:changc10@vcu.edu" style="color:inherit">changc10@vcu.edu</a></footer><script>
+<p class="muted">v2.1 · Refined binary-outcome interpretation, event coding, Word copy, and default model specification.</p></section><section class="card"><span class="model-tag">Live model output</span><div class="tabs"><button class="on" data-p="equations">Equations</button><button data-p="variance">Variance</button><button data-p="explain">Explanation</button><button data-p="report">Model specification draft</button></div><div id="equations" class="pane"></div><div id="variance" class="pane hide"></div><div id="explain" class="pane hide"></div><div id="report" class="pane hide"></div></section></main><footer style="max-width:1150px;margin:0 auto;padding:0 20px 28px;text-align:center;color:#667085;font-size:13px">Created by Chi-Ning (Nick) Chang, Ph.D. · Virginia Commonwealth University · <a href="mailto:changc10@vcu.edu" style="color:inherit">changc10@vcu.edu</a></footer><script>
 var q=function(i){return document.getElementById(i)};
 var clean=function(s){return s.replace(/[^A-Za-z0-9]/g,"")||"X"};
 var tv=function(s){return "\\mathrm{"+clean(s)+"}"};
@@ -147,6 +147,9 @@ function drawCross(){
 }
 function wordLinear(tex){
   return tex
+    .replace(/\\operatorname\{logit\}/g,"logit")
+    .replace(/\\operatorname\{Bernoulli\}/g,"Bernoulli")
+    .replace(/\\pi/g,"π")
     .replace(/\\mathrm\{([^{}]+)\}/g,"$1")
     .replace(/\\bar\{([^{}]+)\}/g,"bar($1)")
     .replace(/\\cdot/g,"·")
@@ -167,7 +170,7 @@ function copyText(txt,button,reset){
   }
 }
 function render(){
-  var Y=tv(q("y").value),X=tv(q("x").value),W=tv(q("w").value),c=q("c").value,wc=q("wc").value,binary=q("outcomeType").value==="binary";q("outcomeHelp").textContent=binary?"Two-level logistic mixed model for a binary 0/1 outcome.":"Two-level linear mixed model.";
+  var Y=tv(q("y").value),X=tv(q("x").value),W=tv(q("w").value),c=q("c").value,wc=q("wc").value,binary=q("outcomeType").value==="binary";q("outcomeHelp").textContent=binary?"Two-level logistic mixed model for a binary 0/1 outcome.":"Two-level linear mixed model.";q("eventWrap").style.display=binary?"block":"none";
   var ri=q("ri").checked,ran=q("random").checked,re=q("re").checked&&c==="group";
   q("rew").style.display=c==="group"?"flex":"none";
   var wt=wc==="grand"?"("+W+"_j-\\bar{"+W+"})":W+"_j", xt=term(X,c); var l2extras=extraL2.map(function(p){var P=tv(p.name);return {p:p,P:P,t:p.centering==="grand"?"("+P+"_j-\\bar{"+P+"})":P+"_j"}});
@@ -212,14 +215,14 @@ function render(){
   }
   q("variance").innerHTML=vh;
 
-  var outcome=q("y").value, l1unit=q("l1").value, l2unit=q("l2").value;
+  var outcome=q("y").value, l1unit=q("l1").value, l2unit=q("l2").value,eventLabel=q("eventLabel").value||"event";
   var centeringText=function(name,cc){
     if(cc==="group")return name+" is group-mean centered, so its Level 1 coefficient represents a within-"+l2unit.toLowerCase()+" association.";
     if(cc==="grand")return name+" is grand-mean centered, so zero represents the sample grand mean of "+name+".";
     return name+" is entered without centering.";
   };
   var exp=[];
-  exp.push("<h3>Model overview</h3><p>"+outcome+" is modeled for "+l1unit.toLowerCase()+"s nested within "+l2unit.toLowerCase()+"s using a "+(binary?"two-level logistic mixed model. The model predicts the log-odds (and corresponding odds) of "+outcome+".":"two-level linear mixed model.")+"</p>");
+  exp.push("<h3>Model overview</h3><p>"+outcome+" is modeled for "+l1unit.toLowerCase()+"s nested within "+l2unit.toLowerCase()+"s using a "+(binary?"two-level logistic mixed model. The model predicts the log-odds (and corresponding odds) of "+eventLabel+" (Y = 1).":"two-level linear mixed model.")+"</p>");
   exp.push("<h3>Level 1 effects</h3><p>"+centeringText(q("x").value,c)+"</p>");
   extras.forEach(function(z){exp.push("<p>"+centeringText(z.p.name,z.p.centering)+"</p>")});
   exp.push("<h3>Level 2 effects</h3><p>"+q("w").value+(wc==="grand"?" is grand-mean centered.":" is entered without centering.")+" Its coefficient represents the association between "+q("w").value+" and "+(binary?"the log-odds of ":"the expected ")+outcome+", conditional on the other terms in the model.</p>");
@@ -231,9 +234,10 @@ function render(){
     exp.push("<h3>Between-group effects</h3><p>Group means for "+means.join(", ")+" are reintroduced at Level 2. Their coefficients represent between-"+l2unit.toLowerCase()+" associations while the corresponding group-mean-centered Level 1 coefficients represent within-"+l2unit.toLowerCase()+" associations.</p>");
     exp.push("<p><strong>Contextual effects:</strong> for a predictor whose group mean is reintroduced, a contextual effect can be expressed as the between-"+l2unit.toLowerCase()+" coefficient minus the corresponding within-"+l2unit.toLowerCase()+" coefficient. This contrast should be interpreted only when the within- and between-level terms represent the same underlying predictor on a comparable scale.</p>");
   }
+  if(binary)exp.push("<p><strong>Odds-ratio direction:</strong> an odds ratio greater than 1 indicates higher odds of "+eventLabel+" (Y = 1), whereas an odds ratio less than 1 indicates lower odds, holding the other model terms constant.</p>");
   if(activeCross.length){
     exp.push("<h3>Cross-level interactions</h3>");
-    activeCross.forEach(function(z){exp.push("<p><strong>"+z.L2.name+" × "+z.L1.name+":</strong> the "+z.L1.name+" slope is allowed to differ as a function of "+z.L2.name+". The interaction coefficient indicates how much the "+z.L1.name+" slope changes for a one-unit increase in "+z.L2.name+(z.L2.p&&z.L2.p.centering==="grand"?" relative to its grand mean":z.L2.key==="w1"&&wc==="grand"?" relative to its grand mean":"")+".</p>")});
+    activeCross.forEach(function(z){exp.push("<p><strong>"+z.L2.name+" × "+z.L1.name+":</strong> the "+z.L1.name+" slope is allowed to differ as a function of "+z.L2.name+". The interaction coefficient indicates how much the "+z.L1.name+" slope"+(binary?" on the log-odds scale":"")+" changes for a one-unit increase in "+z.L2.name+(z.L2.p&&z.L2.p.centering==="grand"?" relative to its grand mean":z.L2.key==="w1"&&wc==="grand"?" relative to its grand mean":"")+".</p>")});
   }
   exp.push("<h3>Random effects</h3>");
   exp.push("<p>"+(ri?"The random intercept allows "+(binary?"the baseline log-odds of ":"the expected ")+outcome+" to vary across "+l2unit.toLowerCase()+"s after accounting for the fixed effects.":"No random intercept is specified.")+"</p>");
@@ -251,13 +255,13 @@ function render(){
   var cg=1;
   if(re){exp.push("<p><strong>\\(\\gamma_{0"+cg+"}\\)</strong>: between-"+l2unit.toLowerCase()+" association for the group mean of "+q("x").value+", conditional on the other model terms.</p>");cg++}
   extras.forEach(function(z){if(z.p.centering==="group"&&z.p.re){exp.push("<p><strong>\\(\\gamma_{0"+cg+"}\\)</strong>: between-"+l2unit.toLowerCase()+" association for the group mean of "+z.p.name+", conditional on the other model terms.</p>");cg++}});
-  exp.push("<p><strong>\\(\\gamma_{0"+cg+"}\\)</strong>: Level 2 association of "+q("w").value+" with expected "+outcome+", conditional on the other model terms.</p>");cg++;
-  l2extras.forEach(function(z){exp.push("<p><strong>\\(\\gamma_{0"+cg+"}\\)</strong>: Level 2 association of "+z.p.name+" with expected "+outcome+", conditional on the other model terms.</p>");cg++});
-  activeCross.forEach(function(z){exp.push("<p><strong>\\(\\gamma_{"+z.L1.beta+z.gidx+"}\\)</strong>: change in the "+z.L1.name+" slope associated with a one-unit increase in "+z.L2.name+".</p>")});
+  exp.push("<p><strong>\\(\\gamma_{0"+cg+"}\\)</strong>: "+(binary?"change in the log-odds of "+eventLabel+" associated with a one-unit increase in "+q("w").value+". The corresponding odds ratio is \\(e^{\\gamma_{0"+cg+"}}\\).":"Level 2 association of "+q("w").value+" with expected "+outcome)+", conditional on the other model terms.</p>");cg++;
+  l2extras.forEach(function(z){exp.push("<p><strong>\\(\\gamma_{0"+cg+"}\\)</strong>: "+(binary?"change in the log-odds of "+eventLabel+" associated with a one-unit increase in "+z.p.name+". The corresponding odds ratio is \\(e^{\\gamma_{0"+cg+"}}\\).":"Level 2 association of "+z.p.name+" with expected "+outcome)+", conditional on the other model terms.</p>");cg++});
+  activeCross.forEach(function(z){exp.push("<p><strong>\\(\\gamma_{"+z.L1.beta+z.gidx+"}\\)</strong>: change in the "+z.L1.name+" slope"+(binary?" on the log-odds scale":"")+" associated with a one-unit increase in "+z.L2.name+".</p>")});
   q("explain").innerHTML=exp.join("");
 
   var rpt=[];
-  rpt.push("A two-level "+(binary?"logistic mixed model":"linear mixed model")+" was specified with "+l1unit.toLowerCase()+"s (Level 1) nested within "+l2unit.toLowerCase()+"s (Level 2), with "+outcome+" as the outcome.");
+  rpt.push("A two-level "+(binary?"logistic mixed model":"linear mixed model")+" was specified with "+l1unit.toLowerCase()+"s (Level 1) nested within "+l2unit.toLowerCase()+"s (Level 2), with "+outcome+" as the outcome."+(binary?" The event coded 1 was "+eventLabel+".":""));
   var l1names=[q("x").value].concat(extras.map(function(z){return z.p.name}));
   rpt.push("Level 1 predictors included "+l1names.join(", ")+".");
   var centers=[];
@@ -268,7 +272,7 @@ function render(){
   rpt.push("Level 2 predictors included "+l2names.join(", ")+".");
   if(means.length)rpt.push("The group mean"+(means.length>1?"s":"")+" of "+means.join(", ")+" "+(means.length>1?"were":"was")+" reintroduced at Level 2 to distinguish within- and between-"+l2unit.toLowerCase()+" associations.");
   if(activeCross.length)rpt.push("Cross-level interaction"+(activeCross.length>1?"s were":" was")+" specified so that "+activeCross.map(function(z){return z.L2.name+" predicted variation in the "+z.L1.name+" slope"}).join("; ")+".");
-  rpt.push(ri?"A random intercept was included to allow baseline "+outcome+" to vary across "+l2unit.toLowerCase()+"s.":"The model did not include a random intercept.");
+  rpt.push(ri?"A random intercept was included to allow "+(binary?"the baseline log-odds of "+eventLabel:"baseline "+outcome)+" to vary across "+l2unit.toLowerCase()+"s.":"The model did not include a random intercept.");
   if(rs.length)rpt.push("Random slopes were specified for "+rs.join(", ")+".");
   else rpt.push("No random slopes were specified.");
   if(selectedCovNames.length)rpt.push("Covariances were estimated between "+selectedCovNames.join("; ")+".");
@@ -284,5 +288,5 @@ function render(){
 }
 document.querySelectorAll("input,select").forEach(function(e){e.addEventListener("input",render)});
 document.querySelectorAll(".tabs button").forEach(function(b){b.onclick=function(){document.querySelectorAll(".tabs button").forEach(function(x){x.classList.remove("on")});document.querySelectorAll(".pane").forEach(function(x){x.classList.add("hide")});b.classList.add("on");q(b.dataset.p).classList.remove("hide")}});
-document.querySelectorAll(".collapsebtn").forEach(function(b){b.onclick=function(){var body=b.closest(".builder-section").querySelector(".builder-body");body.classList.toggle("collapsed");b.textContent=body.classList.contains("collapsed")?"+":"−"}});q("addL1").onclick=function(){addL1()};q("addL2").onclick=function(){addL2()};q("addCross").onclick=function(){addCross()};crosses.push({id:nextCrossId++,l1:"x1",l2:"w1"});drawExtra();drawExtraL2();drawCross();drawRandomEffects();q("ri").addEventListener("change",function(){drawRandomEffects();render()});q("x").addEventListener("input",drawRandomEffects);window.addEventListener("load",function(){drawRandomEffects();render()});render();
+document.querySelectorAll(".collapsebtn").forEach(function(b){b.onclick=function(){var body=b.closest(".builder-section").querySelector(".builder-body");body.classList.toggle("collapsed");b.textContent=body.classList.contains("collapsed")?"+":"−"}});q("addL1").onclick=function(){addL1()};q("addL2").onclick=function(){addL2()};q("addCross").onclick=function(){addCross()};drawExtra();drawExtraL2();drawCross();drawRandomEffects();q("ri").addEventListener("change",function(){drawRandomEffects();render()});q("x").addEventListener("input",drawRandomEffects);window.addEventListener("load",function(){drawRandomEffects();render()});render();
 </script></body></html>
