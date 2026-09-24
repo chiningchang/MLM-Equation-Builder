@@ -10,12 +10,12 @@ https://chiningchang.github.io/MLM-Equation-Builder/
 
 ## Current Version
 
-Version 2.2 supports **two-level mixed models with continuous or binary (0/1) outcomes**.
+Version 2.3 supports **two-level mixed models with continuous or binary (0/1) outcomes**.
 
 ### Features
 
 - Continuous outcomes using two-level linear mixed models
-- Binary (0/1) outcomes using two-level logistic mixed models
+- Binary (0/1) outcomes using two-level logistic mixed-effects models (generalized linear mixed models; GLMMs)
 - Bernoulli/logit model equations and odds-ratio interpretation for binary outcomes
 - Explicit event (Y = 1) labeling and logit-link guidance for binary outcomes
 - Centering-aware intercept and slope interpretation
@@ -29,11 +29,11 @@ Version 2.2 supports **two-level mixed models with continuous or binary (0/1) ou
 - Configurable random-effect covariances
 - Dynamic variance–covariance matrix
 - Hierarchical and combined model equations
-- Coefficient-by-coefficient model explanations
+- Dynamic parameter guidance for β group-specific coefficients, γ fixed effects, and u random effects
 - Within-group, between-group, contextual-effect, and cross-level interaction guidance
 - Model-specification reporting drafts
 - Copyable LaTeX equations and reporting text
-- Word-friendly equation copy workflow
+- Editable Word export with equations, variance components, explanations, parameter guidance, model-specification draft, and citation
 - Mobile-optimized controls and equation viewing
 
 ## Privacy
@@ -60,3 +60,10 @@ MLM Equation Builder is designed to support **teaching, model specification, and
 **Chi-Ning (Nick) Chang, Ph.D.**  
 Associate Professor  
 Virginia Commonwealth University
+
+
+## Citation
+
+If you use MLM Equation Builder in teaching, research, or scholarly work, please cite:
+
+> Chang, C. N. (2026). *MLM Equation Builder* [Web application]. https://chiningchang.github.io/MLM-Equation-Builder/
