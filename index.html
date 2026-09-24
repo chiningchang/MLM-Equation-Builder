@@ -48,7 +48,7 @@ footer{padding:4px 16px 24px!important;font-size:12px!important;line-height:1.5}
 
 <div class="builder-section"><div class="section-title"><h3>4. Cross-Level Interactions</h3><button type="button" class="collapsebtn" aria-label="Toggle section">−</button></div><div class="builder-body"><p class="helper">After defining Level 1 and Level 2 predictors, choose which Level 2 predictor predicts which Level 1 slope.</p>
 <div id="crossList"></div><button type="button" id="addCross" class="addbtn">＋ Add Cross-Level Interaction</button><p id="warn" class="muted" style="display:none;color:#a15c00"></p></div></div>
-</section><section class="card output-card"><h2 class="section-main-title">Live Model Output</h2><p class="section-main-sub">Updates automatically as you build your model.</p><div class="tabs"><button class="on" data-p="equations">Equations</button><button data-p="variance">Variance</button><button data-p="explain">Explanation</button><button data-p="report">Model specification draft</button></div><div id="equations" class="pane"></div><div id="variance" class="pane hide"></div><div id="explain" class="pane hide"></div><div id="report" class="pane hide"></div><div class="export-section"><h3>Export to Word</h3><p>Download the complete model—including equations, variance components, and the model specification draft—as an editable Word document.</p><button type="button" class="exportbtn" id="downloadDocx">Download Word (.docx)</button></div></section></main><footer style="max-width:1150px;margin:0 auto;padding:0 20px 28px;text-align:center;color:#667085;font-size:13px"><div style="margin-bottom:14px"><strong>Suggested citation</strong><div style="margin-top:5px">Chang, C. N. (2026). <em>MLM Equation Builder</em> [Web application]. https://chiningchang.github.io/MLM-Equation-Builder/</div><button type="button" class="copybtn" id="copyCitation" style="margin-top:8px">Copy citation</button></div>Question or Feedback? Reach out to Dr. Chi-Ning (Nick) Chang <a href="mailto:changc10@vcu.edu" style="color:inherit">changc10@vcu.edu</a><div style="margin-top:6px;font-size:12px">v2.3</div></footer><script>
+</section><section class="card output-card"><h2 class="section-main-title">Live Model Output</h2><p class="section-main-sub">Updates automatically as you build your model.</p><div class="tabs"><button class="on" data-p="equations">Equations</button><button data-p="variance">Variance</button><button data-p="explain">Explanation</button><button data-p="report">Model specification draft</button></div><div id="equations" class="pane"></div><div id="variance" class="pane hide"></div><div id="explain" class="pane hide"></div><div id="report" class="pane hide"></div><div class="export-section"><h3>Export to Word</h3><p>Download the complete model—including equations, variance components, explanations, parameter guidance, and the model specification draft—as an editable Word document.</p><button type="button" class="exportbtn" id="downloadDocx">Download Word (.docx)</button></div></section></main><footer style="max-width:1150px;margin:0 auto;padding:0 20px 28px;text-align:center;color:#667085;font-size:13px"><div style="margin-bottom:14px"><strong>Suggested citation</strong><div style="margin-top:5px">Chang, C. N. (2026). <em>MLM Equation Builder</em> [Web application]. https://chiningchang.github.io/MLM-Equation-Builder/</div><button type="button" class="copybtn" id="copyCitation" style="margin-top:8px">Copy citation</button></div>Question or Feedback? Reach out to Dr. Chi-Ning (Nick) Chang <a href="mailto:changc10@vcu.edu" style="color:inherit">changc10@vcu.edu</a><div style="margin-top:6px;font-size:12px">v2.3</div></footer><script>
 var q=function(i){return document.getElementById(i)};
 var clean=function(s){return s.replace(/[^A-Za-z0-9]/g,"")||"X"};
 var tv=function(s){return "\\mathrm{"+clean(s)+"}"};
@@ -294,7 +294,13 @@ function render(){
   exp.push("<p>"+(rs.length?"Random slopes are specified for "+rs.join(", ")+", allowing these Level 1 associations to vary across "+l2unit.toLowerCase()+"s.":"No random slopes are specified.")+"</p>");
   var selectedCovNames=[];for(var ci=0;ci<randomMeta.length;ci++)for(var cj=ci+1;cj<randomMeta.length;cj++){var ca=randomMeta[ci],cb=randomMeta[cj],ck=[ca.key,cb.key].sort().join("|");if(covPairs[ck])selectedCovNames.push(ca.name+" and "+cb.name)}
   if(selectedCovNames.length)exp.push("<p>Covariances are estimated between "+selectedCovNames.join("; ")+", allowing these random effects to be associated across "+l2unit.toLowerCase()+"s.</p>");
-  exp.push("<h3>Coefficient guide</h3>");
+  exp.push("<h3>Parameter guide</h3>");
+  exp.push("<h3>β coefficients — "+l2unit+"-specific coefficients</h3>");
+  exp.push("<p><strong>\\(\\beta_{0j}\\)</strong>: the intercept for "+l2unit.toLowerCase()+" j. It represents "+(binary?"the baseline log-odds of "+eventLabel:"the expected "+outcome)+" when the Level 1 predictors equal zero after the selected centering, conditional on the other model terms.</p>");
+  if(hasL1)exp.push("<p><strong>\\(\\beta_{1j}\\)</strong>: the "+q("x").value+" slope for "+l2unit.toLowerCase()+" j. It represents the "+q("x").value+" association"+(binary?" with the log-odds of "+eventLabel:" with "+outcome)+" for that particular "+l2unit.toLowerCase()+".</p>");
+  extras.forEach(function(z){exp.push("<p><strong>\\(\\beta_{"+z.beta+"j}\\)</strong>: the "+z.p.name+" slope for "+l2unit.toLowerCase()+" j. It represents the "+z.p.name+" association"+(binary?" with the log-odds of "+eventLabel:" with "+outcome)+" for that particular "+l2unit.toLowerCase()+".</p>")});
+  exp.push("<h3>γ coefficients — fixed effects</h3>");
+  exp.push("<p>The \\(\\gamma\\) coefficients describe the fixed, population-average components used to explain the "+l2unit.toLowerCase()+"-specific \\(\\beta\\) coefficients.</p>");
   exp.push("<p><strong>\\(\\gamma_{00}\\)</strong>: "+(binary?"baseline log-odds of "+outcome:"expected "+outcome)+" when all predictors equal zero after the selected centering.</p>");
   var withinDesc=function(name,cc){return cc==="group"?"a one-unit within-"+l2unit.toLowerCase()+" difference in "+name:cc==="grand"?"a one-unit difference in "+name+" relative to its grand mean":"a one-unit difference in "+name};
   exp.push("<p><strong>\\(\\gamma_{10}\\)</strong>: "+(binary?"change in the log-odds of "+outcome:"expected difference in "+outcome)+" associated with "+withinDesc(q("x").value,c)+", holding the other model terms constant."+(binary?" The corresponding odds ratio is \\(e^{\\gamma_{10}}\\).":"")+"</p>");
@@ -305,10 +311,17 @@ function render(){
   exp.push("<p><strong>\\(\\gamma_{0"+cg+"}\\)</strong>: "+(binary?"change in the log-odds of "+eventLabel+" associated with a one-unit increase in "+q("w").value+". The corresponding odds ratio is \\(e^{\\gamma_{0"+cg+"}}\\).":"Level 2 association of "+q("w").value+" with expected "+outcome)+", conditional on the other model terms.</p>");if(hasL2)cg++;
   l2extras.forEach(function(z){exp.push("<p><strong>\\(\\gamma_{0"+cg+"}\\)</strong>: "+(binary?"change in the log-odds of "+eventLabel+" associated with a one-unit increase in "+z.p.name+". The corresponding odds ratio is \\(e^{\\gamma_{0"+cg+"}}\\).":"Level 2 association of "+z.p.name+" with expected "+outcome)+", conditional on the other model terms.</p>");cg++});
   activeCross.forEach(function(z){exp.push("<p><strong>\\(\\gamma_{"+z.L1.beta+z.gidx+"}\\)</strong>: change in the "+z.L1.name+" slope"+(binary?" on the log-odds scale":"")+" associated with a one-unit increase in "+z.L2.name+".</p>")});
+  exp.push("<h3>u terms — random effects</h3>");
+  if(randomMeta.length){
+    exp.push("<p>The \\(u\\) terms are random effects rather than fixed coefficients. They represent how a particular "+l2unit.toLowerCase()+"'s intercept or slope deviates from the value predicted by the fixed effects.</p>");
+    if(ri)exp.push("<p><strong>\\(u_{0j}\\)</strong>: "+l2unit+" j's deviation from the model-predicted intercept"+(binary?" on the log-odds scale":"")+". A positive value indicates a higher intercept than predicted by the fixed effects; a negative value indicates a lower intercept.</p>");
+    l1all.forEach(function(L){if(L.random)exp.push("<p><strong>\\(u_{"+L.beta+"j}\\)</strong>: "+l2unit+" j's deviation from the model-predicted "+L.name+" slope. It indicates how that slope differs from the slope predicted by the fixed effects.</p>")});
+    exp.push("<p><strong>Relationship among parameters:</strong> a "+l2unit.toLowerCase()+"-specific \\(\\beta\\) coefficient is composed of its model-predicted fixed component, represented by \\(\\gamma\\) terms, plus any corresponding "+l2unit.toLowerCase()+"-specific random deviation, represented by a \\(u\\) term.</p>");
+  }else exp.push("<p>No random effects are specified, so there are no \\(u\\) terms in this model.</p>");
   q("explain").innerHTML=exp.join("");
 
   var rpt=[];
-  rpt.push("A two-level "+(binary?"logistic mixed model":"linear mixed model")+" was specified with "+l1unit.toLowerCase()+"s (Level 1) nested within "+l2unit.toLowerCase()+"s (Level 2), with "+outcome+" as the outcome."+(binary?" The event coded 1 was "+eventLabel+".":""));
+  rpt.push("A two-level "+(binary?"logistic mixed-effects model (generalized linear mixed model; GLMM)":"linear mixed model")+" was specified with "+l1unit.toLowerCase()+"s (Level 1) nested within "+l2unit.toLowerCase()+"s (Level 2), with "+outcome+" as the outcome."+(binary?" The event coded 1 was "+eventLabel+".":""));
   var l1names=(hasL1?[q("x").value]:[]).concat(extras.map(function(z){return z.p.name}));
   rpt.push(l1names.length?"Level 1 predictors included "+l1names.join(", ")+".":"No Level 1 predictors were included.");
   var centers=[];
@@ -402,7 +415,7 @@ function render(){
     body.push(heading("Variance and covariance"));
     body.push(heading("Level 2 random effects","Heading2"));
     body.push(textP(randomMeta.length?"The model includes "+randomMeta.map(function(z){return z.name}).join(", ")+".":"No Level 2 random effects selected."));
-    if(binary){body.push(heading("Level 1 distribution","Heading2"));body.push(textP("For a binary logistic model, the Level 1 outcome follows a Bernoulli distribution and a separate residual variance (σ²) is not estimated."))}
+    if(binary){body.push(heading("Level 1 distribution","Heading2"));body.push(textP("For a binary logistic mixed-effects model (GLMM), the Level 1 outcome follows a Bernoulli distribution with a logit link. A separate Level 1 residual variance (σ²) is not freely estimated as it is in a linear mixed model. On the underlying logistic latent-variable scale, π²/3 is commonly used for quantities such as latent-scale ICCs."))}
     else{body.push(heading("Level 1 residual variance","Heading2"));body.push(mathP([vr("r","ij"),mr(" ~ N(0, "),mr("σ²"),mr(")")]))}
     if(randomMeta.length){
       body.push(heading("Variance–covariance matrix","Heading2"));body.push(mathP([mr("G = "),matrix(randomMeta)]));
@@ -411,6 +424,58 @@ function render(){
       chosen.forEach(function(z){var ii=Math.min(+z.A.idx,+z.B.idx),jj=Math.max(+z.A.idx,+z.B.idx);body.push(mathP([mr("Cov("),vr("u",z.A.idx+"j"),mr(", "),vr("u",z.B.idx+"j"),mr(") = "),gr("τ",String(ii)+String(jj))]))});
       if(!chosen.length)body.push(textP("No random-effect covariances are selected."));
     }
+    body.push(heading("Explanation"));
+    body.push(heading("Model overview","Heading2"));
+    body.push(textP(rawY+" is modeled for "+l1unit.toLowerCase()+"s nested within "+l2unit.toLowerCase()+"s using a "+(binary?"two-level logistic mixed-effects model (generalized linear mixed model; GLMM). The model assumes a Bernoulli outcome and uses a logit link to model the log-odds of "+eventLabel+" (Y = 1).":"two-level linear mixed model.")));
+    body.push(heading("Level 1 effects","Heading2"));
+    if(hasL1)body.push(textP(centeringText(rawX,c)+(c==="group"?" Because it is centered around each "+l2unit.toLowerCase()+" mean, β0j refers to "+(binary?"the baseline log-odds of "+eventLabel:"the expected "+rawY)+" when "+rawX+" is at that "+l2unit.toLowerCase()+"'s mean, conditional on the other predictors.":"")));
+    if(!hasL1&&!rawExtras.length)body.push(textP("No Level 1 predictors are specified; this is an intercept-only Level 1 model."));
+    rawExtras.forEach(function(z){body.push(textP(centeringText(z.name,z.centering)))});
+    body.push(heading("Level 2 effects","Heading2"));
+    if(hasL2)body.push(textP(rawW+(wc==="grand"?" is grand-mean centered.":" is entered without centering.")+" Its coefficient represents the association between "+rawW+" and "+(binary?"the log-odds of "+eventLabel:"the expected "+rawY)+", conditional on the other terms in the model."));
+    if(!hasL2&&!rawL2.length)body.push(textP("No Level 2 predictors are specified."));
+    rawL2.forEach(function(z){body.push(textP(z.name+(z.centering==="grand"?" is grand-mean centered.":" is entered without centering.")+" Its coefficient represents its Level 2 association with "+(binary?"the log-odds of "+eventLabel:"the expected "+rawY)+", conditional on the other terms."))});
+    if(means.length){
+      body.push(heading("Between-group effects","Heading2"));
+      body.push(textP("Group means for "+means.join(", ")+" are reintroduced at Level 2. Their coefficients represent between-"+l2unit.toLowerCase()+" associations while the corresponding group-mean-centered Level 1 coefficients represent within-"+l2unit.toLowerCase()+" associations."));
+      body.push(textP("Contextual effects: for a predictor whose group mean is reintroduced, a contextual effect can be expressed as the between-"+l2unit.toLowerCase()+" coefficient minus the corresponding within-"+l2unit.toLowerCase()+" coefficient. This contrast should be interpreted only when the within- and between-level terms represent the same underlying predictor on a comparable scale."));
+    }
+    if(binary){
+      body.push(heading("Binary link function","Heading2"));
+      body.push(textP("Here, πij = P(Yij = 1), and logit(πij) = ln[πij/(1 − πij)]. Fixed-effect coefficients are on the log-odds scale; exponentiating an applicable coefficient gives an odds ratio."));
+      body.push(textP("An odds ratio greater than 1 indicates higher odds of "+eventLabel+" (Y = 1), whereas an odds ratio less than 1 indicates lower odds, holding the other model terms constant."));
+    }
+    if(activeCross.length){
+      body.push(heading("Cross-level interactions","Heading2"));
+      activeCross.forEach(function(z){body.push(textP(z.L2.name+" × "+z.L1.name+": the "+z.L1.name+" slope is allowed to differ as a function of "+z.L2.name+". The interaction coefficient indicates how much the "+z.L1.name+" slope"+(binary?" on the log-odds scale":"")+" changes for a one-unit increase in "+z.L2.name+(z.L2.p&&z.L2.p.centering==="grand"?" relative to its grand mean":z.L2.key==="w1"&&wc==="grand"?" relative to its grand mean":"")+"."))});
+    }
+    body.push(heading("Random effects","Heading2"));
+    body.push(textP(ri?"The random intercept allows "+(binary?"the baseline log-odds of "+eventLabel:"the expected "+rawY)+" to vary across "+l2unit.toLowerCase()+"s after accounting for the fixed effects.":"No random intercept is specified."));
+    body.push(textP(rs.length?"Random slopes are specified for "+rs.join(", ")+", allowing these Level 1 associations to vary across "+l2unit.toLowerCase()+"s.":"No random slopes are specified."));
+    if(selectedCovNames.length)body.push(textP("Covariances are estimated between "+selectedCovNames.join("; ")+", allowing these random effects to be associated across "+l2unit.toLowerCase()+"s."));
+    body.push(heading("Parameter guide","Heading2"));
+    body.push(heading("β coefficients — "+l2unit+"-specific coefficients","Heading2"));
+    body.push(textP("β0j: the intercept for "+l2unit.toLowerCase()+" j. It represents "+(binary?"the baseline log-odds of "+eventLabel:"the expected "+rawY)+" when the Level 1 predictors equal zero after the selected centering, conditional on the other model terms."));
+    if(hasL1)body.push(textP("β1j: the "+rawX+" slope for "+l2unit.toLowerCase()+" j. It represents the "+rawX+" association"+(binary?" with the log-odds of "+eventLabel:" with "+rawY)+" for that particular "+l2unit.toLowerCase()+"."));
+    rawExtras.forEach(function(z){body.push(textP("β"+z.beta+"j: the "+z.name+" slope for "+l2unit.toLowerCase()+" j. It represents the "+z.name+" association"+(binary?" with the log-odds of "+eventLabel:" with "+rawY)+" for that particular "+l2unit.toLowerCase()+"."))});
+    body.push(heading("γ coefficients — fixed effects","Heading2"));
+    body.push(textP("The γ coefficients describe the fixed, population-average components used to explain the "+l2unit.toLowerCase()+"-specific β coefficients."));
+    body.push(textP("γ00: "+(binary?"baseline log-odds of "+eventLabel:"expected "+rawY)+" when all predictors equal zero after the selected centering."));
+    if(hasL1)body.push(textP("γ10: "+(binary?"change in the log-odds of "+eventLabel:"expected difference in "+rawY)+" associated with "+withinDesc(rawX,c)+", holding the other model terms constant."+(binary?" The corresponding conditional odds ratio is exp(γ10) when interaction terms involving "+rawX+" equal zero.":"")));
+    rawExtras.forEach(function(z){body.push(textP("γ"+z.beta+"0: "+(binary?"change in the log-odds of "+eventLabel:"expected difference in "+rawY)+" associated with "+withinDesc(z.name,z.centering)+", holding the other model terms constant."+(binary?" The corresponding conditional odds ratio is exp(γ"+z.beta+"0) when applicable interaction terms equal zero.":"")))});
+    var wcg=1;
+    if(re){body.push(textP("γ0"+wcg+": between-"+l2unit.toLowerCase()+" association for the group mean of "+rawX+", conditional on the other model terms."));wcg++}
+    rawExtras.forEach(function(z){if(z.centering==="group"&&z.re){body.push(textP("γ0"+wcg+": between-"+l2unit.toLowerCase()+" association for the group mean of "+z.name+", conditional on the other model terms."));wcg++}});
+    if(hasL2){body.push(textP("γ0"+wcg+": "+(binary?"change in the log-odds of "+eventLabel+" associated with a one-unit increase in "+rawW+". The corresponding odds ratio is exp(γ0"+wcg+").":"Level 2 association of "+rawW+" with expected "+rawY)+", conditional on the other model terms."));wcg++}
+    rawL2.forEach(function(z){body.push(textP("γ0"+wcg+": "+(binary?"change in the log-odds of "+eventLabel+" associated with a one-unit increase in "+z.name+". The corresponding odds ratio is exp(γ0"+wcg+").":"Level 2 association of "+z.name+" with expected "+rawY)+", conditional on the other model terms."));wcg++});
+    activeCross.forEach(function(z){body.push(textP("γ"+z.L1.beta+z.gidx+": change in the "+z.L1.name+" slope"+(binary?" on the log-odds scale":"")+" associated with a one-unit increase in "+z.L2.name+"."))});
+    body.push(heading("u terms — random effects","Heading2"));
+    if(randomMeta.length){
+      body.push(textP("The u terms are random effects rather than fixed coefficients. They represent how a particular "+l2unit.toLowerCase()+"'s intercept or slope deviates from the value predicted by the fixed effects."));
+      if(ri)body.push(textP("u0j: "+l2unit+" j's deviation from the model-predicted intercept"+(binary?" on the log-odds scale":"")+". A positive value indicates a higher intercept than predicted by the fixed effects; a negative value indicates a lower intercept."));
+      l1all.forEach(function(L){if(L.random)body.push(textP("u"+L.beta+"j: "+l2unit+" j's deviation from the model-predicted "+L.name+" slope. It indicates how that slope differs from the slope predicted by the fixed effects."))});
+      body.push(textP("Relationship among parameters: a "+l2unit.toLowerCase()+"-specific β coefficient is composed of its model-predicted fixed component, represented by γ terms, plus any corresponding "+l2unit.toLowerCase()+"-specific random deviation, represented by a u term."));
+    }else body.push(textP("No random effects are specified, so there are no u terms in this model."));
     body.push(heading("Model specification draft"));body.push(textP(rpt.join(" ")));
     body.push(heading("Suggested citation"));body.push(textP("Chang, C. N. (2026). MLM Equation Builder [Web application]. https://chiningchang.github.io/MLM-Equation-Builder/"));
     var xml='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math"><w:body>'+body.join("")+'<w:sectPr><w:pgSz w:w="12240" w:h="15840"/><w:pgMar w:top="720" w:right="720" w:bottom="720" w:left="720"/></w:sectPr></w:body></w:document>';
