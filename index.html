@@ -16,7 +16,7 @@
 
 <div class="builder-section"><h3>4. Cross-Level Interactions</h3><p class="helper">After defining Level 1 and Level 2 predictors, choose which Level 2 predictor predicts which Level 1 slope.</p>
 <div id="crossList"></div><button type="button" id="addCross" class="addbtn">＋ Add Cross-Level Interaction</button><p id="warn" class="muted" style="display:none;color:#a15c00"></p></div>
-<p class="muted">v1.0: random slopes and random-effect covariances are configured together in the Random Effects section; variance and reporting output update with the full random-effects structure.</p></section><section class="card"><span class="model-tag">Live model output</span><div class="tabs"><button class="on" data-p="equations">Equations</button><button data-p="variance">Variance</button><button data-p="explain">Explanation</button><button data-p="report">Manuscript draft</button></div><div id="equations" class="pane"></div><div id="variance" class="pane hide"></div><div id="explain" class="pane hide"></div><div id="report" class="pane hide"></div></section></main><footer style="max-width:1150px;margin:0 auto;padding:0 20px 28px;text-align:center;color:#667085;font-size:13px">Created by Chi-Ning (Nick) Chang, Ph.D. · Virginia Commonwealth University · <a href="mailto:changc10@vcu.edu" style="color:inherit">changc10@vcu.edu</a></footer><script>
+<p class="muted">v1.1: added a full random-effects variance–covariance matrix and fixed dynamic random-slope controls for newly added Level 1 predictors.</p></section><section class="card"><span class="model-tag">Live model output</span><div class="tabs"><button class="on" data-p="equations">Equations</button><button data-p="variance">Variance</button><button data-p="explain">Explanation</button><button data-p="report">Manuscript draft</button></div><div id="equations" class="pane"></div><div id="variance" class="pane hide"></div><div id="explain" class="pane hide"></div><div id="report" class="pane hide"></div></section></main><footer style="max-width:1150px;margin:0 auto;padding:0 20px 28px;text-align:center;color:#667085;font-size:13px">Created by Chi-Ning (Nick) Chang, Ph.D. · Virginia Commonwealth University · <a href="mailto:changc10@vcu.edu" style="color:inherit">changc10@vcu.edu</a></footer><script>
 var q=function(i){return document.getElementById(i)};
 var clean=function(s){return s.replace(/[^A-Za-z0-9]/g,"")||"X"};
 var tv=function(s){return "\\mathrm{"+clean(s)+"}"};
@@ -24,9 +24,9 @@ var extraL1=[], extraL2=[], crosses=[], covPairs={}, nextId=2, nextL2Id=2, nextC
 
 function addL1(name){
   extraL1.push({id:nextId++,name:name||("Predictor "+nextId),centering:"none",random:false,re:false});
-  drawExtra(); drawCross(); render();
+  drawExtra(); drawCross(); drawRandomEffects(); render();
 }
-function removeL1(id){extraL1=extraL1.filter(function(p){return p.id!==id});drawExtra();drawCross();render()}
+function removeL1(id){extraL1=extraL1.filter(function(p){return p.id!==id});drawExtra();drawCross();drawRandomEffects();render()}
 function drawExtra(){
   q("extraL1").innerHTML=extraL1.map(function(p,k){
     return '<div class="extra-p" data-id="'+p.id+'" style="margin:12px 0;padding:14px;border:1px solid #e3e6ec;border-radius:10px">'+
@@ -39,7 +39,7 @@ function drawExtra(){
   document.querySelectorAll(".extra-p").forEach(function(card){
     var id=+card.dataset.id, p=extraL1.find(function(z){return z.id===id});
     card.querySelector(".pn").oninput=function(){p.name=this.value;drawRandomEffects();render()};
-    card.querySelector(".pc").onchange=function(){p.centering=this.value;if(this.value!=="group")p.re=false;drawExtra();render()};
+    card.querySelector(".pc").onchange=function(){p.centering=this.value;if(this.value!=="group")p.re=false;drawExtra();drawRandomEffects();render()};
     card.querySelector(".prei").onchange=function(){p.re=this.checked;render()};
   });
   document.querySelectorAll(".remove-p").forEach(function(b){b.onclick=function(){removeL1(+this.dataset.id)}});
@@ -146,13 +146,18 @@ function render(){
 
   var randomMeta=[]; if(ri)randomMeta.push({key:"i",label:"u_{0j}",idx:"0",name:"random intercept"}); if(ran)randomMeta.push({key:"x1",label:"u_{1j}",idx:"1",name:q("x").value+" slope"}); extras.forEach(function(z){if(z.p.random)randomMeta.push({key:"x"+z.p.id,label:"u_{"+z.beta+"j}",idx:String(z.beta),name:z.p.name+" slope"})});
   var vh=randomMeta.length?'<h3>Level 2 random effects</h3><p>The model includes '+randomMeta.map(function(z){return z.name}).join(", ")+'.</p>':"<h3>Level 2 random effects</h3><p>No Level 2 random effects selected.</p>";
-  vh+='<h3>Residual variance</h3><div class=eq>\\[r_{ij}\\sim N(0,\\sigma^2)\\]</div>';
+  vh+='<h3>Level 1 residual variance</h3><div class=eq>\\[r_{ij}\\sim N(0,\\sigma^2)\\]</div>';
+  var chosen=[];
   if(randomMeta.length){
+    for(var ai=0;ai<randomMeta.length;ai++)for(var aj=ai+1;aj<randomMeta.length;aj++){var A=randomMeta[ai],B=randomMeta[aj],key=[A.key,B.key].sort().join("|");if(covPairs[key])chosen.push({A:A,B:B,key:key})}
+    vh+='<h3>Variance–covariance matrix</h3><p class="helper">Diagonal elements are random-effect variances. Off-diagonal elements are estimated covariances; 0 indicates a covariance not selected in the model.</p>';
+    var vec=randomMeta.map(function(z){return z.label}).join("\\\\");
+    var rows=randomMeta.map(function(A,i){return randomMeta.map(function(B,j){if(i===j)return "\\tau_{"+A.idx+A.idx+"}";var key=[A.key,B.key].sort().join("|");return covPairs[key]?"\\tau_{"+A.idx+B.idx+"}":"0"}).join(" & ")}).join("\\\\");
+    vh+='<div class=eq>\\[\\begin{pmatrix}'+vec+'\\end{pmatrix}\\sim N\\left[\\begin{pmatrix}'+randomMeta.map(function(){return "0"}).join("\\\\")+'\\end{pmatrix},\\begin{pmatrix}'+rows+'\\end{pmatrix}\\right]\\]</div>';
     vh+='<h3>Variance components</h3>';
     randomMeta.forEach(function(z){vh+='<div class=eq>\\[Var('+z.label+')=\\tau_{'+z.idx+z.idx+'}\\]</div>'});
-    var chosen=[];
-    for(var ai=0;ai<randomMeta.length;ai++)for(var aj=ai+1;aj<randomMeta.length;aj++){var A=randomMeta[ai],B=randomMeta[aj],key=[A.key,B.key].sort().join("|");if(covPairs[key])chosen.push({A:A,B:B})}
-    if(chosen.length){vh+='<h3>Covariances</h3>';chosen.forEach(function(z){vh+='<div class=eq>\\[Cov('+z.A.label+','+z.B.label+')=\\tau_{'+z.A.idx+z.B.idx+'}\\]</div>'})}
+    if(chosen.length){vh+='<h3>Estimated covariances</h3>';chosen.forEach(function(z){vh+='<div class=eq>\\[Cov('+z.A.label+','+z.B.label+')=\\tau_{'+z.A.idx+z.B.idx+'}\\]</div>'})}
+    else vh+='<p>No random-effect covariances are selected.</p>';
   }
   q("variance").innerHTML=vh;
 
