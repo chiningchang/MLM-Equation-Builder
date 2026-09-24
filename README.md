@@ -1,1 +1,45 @@
-# MLM Equation Builder\n\nA browser-based tool for building multilevel models and generating publication-ready equations, variance components, explanations, and manuscript reporting drafts.\n\n## Current prototype\n\nVersion 0.1 focuses on two-level linear models with a continuous outcome. It supports group-mean and grand-mean centering, reintroduction of a group mean at Level 2, fixed/random slopes, cross-level interactions, variance components, optional intercept-slope covariance, combined equations, explanations, and a reporting draft.\n\nThe tool runs entirely in the browser; no research data or model information is uploaded to a server.\n\n## Planned development\n\nFuture versions may add multiple predictors, three-level models, generalized outcomes, richer centering options, equation export, and R/Mplus syntax generation.\n\n## Intended use\n\nDesigned to support teaching, model specification, and research reporting. Generated equations and text should be reviewed by the researcher before manuscript use.\n\n## Author\n\nChi-Ning Chang\n
+# MLM Equation Builder
+
+**Build your multilevel model. Generate equations. Explain and report.**
+
+MLM Equation Builder is a browser-based tool for building multilevel models and automatically generating model equations, variance components, plain-language explanations, and manuscript-ready reporting drafts.
+
+## Current Prototype
+
+Version 0.1 focuses on **two-level linear models with a continuous outcome**.
+
+### Features
+
+- Level 1 and Level 2 model specification
+- Grand-mean and group-mean centering
+- Reintroduction of group means at Level 2
+- Fixed and random slopes
+- Cross-level interactions
+- Random-intercept and random-slope variance components
+- Intercept–slope covariance
+- Hierarchical and combined equations
+- Plain-language model explanations
+- Manuscript reporting drafts
+
+## Privacy
+
+The tool runs entirely in the browser. Model information is processed locally and is not uploaded to a server.
+
+## Planned Development
+
+Future versions may include:
+
+- Multiple Level 1 and Level 2 predictors
+- Three-level models
+- Generalized outcomes
+- Additional centering options
+- Equation export
+- R and Mplus syntax generation
+
+## Intended Use
+
+MLM Equation Builder is designed to support **teaching, model specification, and research reporting**. Generated equations and reporting text should be reviewed by the researcher before use in a manuscript.
+
+## Author
+
+**Chi-Ning Chang**
