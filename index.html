@@ -46,7 +46,7 @@ footer{padding:4px 16px 24px!important;font-size:12px!important;line-height:1.5}
 
 <div class="builder-section"><div class="section-title"><h3>4. Cross-Level Interactions</h3><button type="button" class="collapsebtn" aria-label="Toggle section">−</button></div><div class="builder-body"><p class="helper">After defining Level 1 and Level 2 predictors, choose which Level 2 predictor predicts which Level 1 slope.</p>
 <div id="crossList"></div><button type="button" id="addCross" class="addbtn">＋ Add Cross-Level Interaction</button><p id="warn" class="muted" style="display:none;color:#a15c00"></p></div></div>
-<p class="muted">v2.2 · Added unconditional models, zero-predictor states, clearer centering interpretation, and explicit binary link-function guidance.</p></section><section class="card"><span class="model-tag">Live model output</span><div class="tabs"><button class="on" data-p="equations">Equations</button><button data-p="variance">Variance</button><button data-p="explain">Explanation</button><button data-p="report">Model specification draft</button></div><div id="equations" class="pane"></div><div id="variance" class="pane hide"></div><div id="explain" class="pane hide"></div><div id="report" class="pane hide"></div></section></main><footer style="max-width:1150px;margin:0 auto;padding:0 20px 28px;text-align:center;color:#667085;font-size:13px">Created by Chi-Ning (Nick) Chang, Ph.D. · Virginia Commonwealth University · <a href="mailto:changc10@vcu.edu" style="color:inherit">changc10@vcu.edu</a></footer><script>
+<p class="muted">v2.2.1 · Fixed initial unconditional-model rendering so hidden predictors are not included in equations or reporting.</p></section><section class="card"><span class="model-tag">Live model output</span><div class="tabs"><button class="on" data-p="equations">Equations</button><button data-p="variance">Variance</button><button data-p="explain">Explanation</button><button data-p="report">Model specification draft</button></div><div id="equations" class="pane"></div><div id="variance" class="pane hide"></div><div id="explain" class="pane hide"></div><div id="report" class="pane hide"></div></section></main><footer style="max-width:1150px;margin:0 auto;padding:0 20px 28px;text-align:center;color:#667085;font-size:13px">Created by Chi-Ning (Nick) Chang, Ph.D. · Virginia Commonwealth University · <a href="mailto:changc10@vcu.edu" style="color:inherit">changc10@vcu.edu</a></footer><script>
 var q=function(i){return document.getElementById(i)};
 var clean=function(s){return s.replace(/[^A-Za-z0-9]/g,"")||"X"};
 var tv=function(s){return "\\mathrm{"+clean(s)+"}"};
@@ -179,21 +179,21 @@ function render(){
   q("warn").style.display="none";q("warn").textContent="";
 
   var extras=extraL1.map(function(p,k){return {p:p,P:tv(p.name),t:term(tv(p.name),p.centering),beta:k+2}});var l1all=(hasL1?[{key:"x1",name:q("x").value,P:X,t:xt,beta:1,random:ran}]:[]).concat(extras.map(function(z){return {key:"x"+z.p.id,name:z.p.name,P:z.P,t:z.t,beta:z.beta,random:z.p.random}}));var l2all=(hasL2?[{key:"w1",name:q("w").value,P:W,t:wt}]:[]).concat(l2extras.map(function(z){return {key:"w"+z.p.id,name:z.p.name,P:z.P,t:z.t}}));var activeCross=crosses.map(function(cr){return {cr:cr,L1:l1all.find(function(z){return z.key===cr.l1}),L2:l2all.find(function(z){return z.key===cr.l2})}}).filter(function(z){return z.L1&&z.L2});var crossCount={};activeCross.forEach(function(z){var b=z.L1.beta;crossCount[b]=(crossCount[b]||0)+1;z.gidx=crossCount[b]});
-  var lhs=binary?"\\operatorname{logit}(\\pi_{ij})":Y+"_{ij}";var l1=lhs+"=\\beta_{0j}+\\beta_{1j}"+xt;
+  var lhs=binary?"\\operatorname{logit}(\\pi_{ij})":Y+"_{ij}";var l1=lhs+"=\\beta_{0j}"+(hasL1?"+\\beta_{1j}"+xt:"");
   extras.forEach(function(z){l1+="+\\beta_{"+z.beta+"j}"+z.t}); if(!binary)l1+="+r_{ij}";
 
   var gidx=1, b0="\\beta_{0j}=\\gamma_{00}";
   if(re){b0+="+\\gamma_{0"+gidx+"}\\bar{"+X+"}_{\\cdot j}";gidx++}
   extras.forEach(function(z){if(z.p.centering==="group"&&z.p.re){b0+="+\\gamma_{0"+gidx+"}\\bar{"+z.P+"}_{\\cdot j}";gidx++}});
-  b0+="+\\gamma_{0"+gidx+"}"+wt;gidx++;l2extras.forEach(function(z){b0+="+\\gamma_{0"+gidx+"}"+z.t;gidx++});b0+=(ri?"+u_{0j}":"");
+  if(hasL2){b0+="+\\gamma_{0"+gidx+"}"+wt;gidx++}l2extras.forEach(function(z){b0+="+\\gamma_{0"+gidx+"}"+z.t;gidx++});b0+=(ri?"+u_{0j}":"");
   var b1="\\beta_{1j}=\\gamma_{10}";activeCross.filter(function(z){return z.L1.beta===1}).forEach(function(z){b1+="+\\gamma_{1"+z.gidx+"}"+z.L2.t});b1+=(ran?"+u_{1j}":"");
-  var l2eq='<div class=eq>\\['+b0+'\\]</div><div class=eq>\\['+b1+'\\]</div>';
+  var l2eq='<div class=eq>\\['+b0+'\\]</div>'+(hasL1?'<div class=eq>\\['+b1+'\\]</div>':'');
   extras.forEach(function(z){var bz='\\beta_{'+z.beta+'j}=\\gamma_{'+z.beta+'0}';activeCross.filter(function(a){return a.L1.beta===z.beta}).forEach(function(a){bz+='+\\gamma_{'+z.beta+a.gidx+'}'+a.L2.t});bz+=(z.p.random?'+u_{'+z.beta+'j}':'');l2eq+='<div class=eq>\\['+bz+'\\]</div>'});
 
   var comb=lhs+"=\\gamma_{00}", gi=1;
   if(re){comb+="+\\gamma_{0"+gi+"}\\bar{"+X+"}_{\\cdot j}";gi++}
   extras.forEach(function(z){if(z.p.centering==="group"&&z.p.re){comb+="+\\gamma_{0"+gi+"}\\bar{"+z.P+"}_{\\cdot j}";gi++}});
-  comb+="+\\gamma_{0"+gi+"}"+wt;gi++;l2extras.forEach(function(z){comb+="+\\gamma_{0"+gi+"}"+z.t;gi++});comb+="+\\gamma_{10}"+xt;activeCross.forEach(function(z){comb+="+\\gamma_{"+z.L1.beta+z.gidx+"}"+z.L2.t+z.L1.t});
+  if(hasL2){comb+="+\\gamma_{0"+gi+"}"+wt;gi++}l2extras.forEach(function(z){comb+="+\\gamma_{0"+gi+"}"+z.t;gi++});if(hasL1)comb+="+\\gamma_{10}"+xt;activeCross.forEach(function(z){comb+="+\\gamma_{"+z.L1.beta+z.gidx+"}"+z.L2.t+z.L1.t});
   extras.forEach(function(z){comb+="+\\gamma_{"+z.beta+"0}"+z.t});
   if(ri)comb+="+u_{0j}"; if(ran)comb+="+u_{1j}"+xt;
   extras.forEach(function(z){if(z.p.random)comb+="+u_{"+z.beta+"j}"+z.t}); if(!binary)comb+="+r_{ij}";
