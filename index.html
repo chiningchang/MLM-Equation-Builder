@@ -1,19 +1,19 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MLM Equation Builder</title><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script><style>body{margin:0;font:15px system-ui;background:#f6f7fb;color:#172033}header{padding:28px;max-width:1150px;margin:auto}main{max-width:1150px;margin:auto;padding:0 20px 30px;display:grid;grid-template-columns:380px 1fr;gap:20px}.card{background:white;border:1px solid #e3e6ec;border-radius:14px;padding:20px}h1{margin:0}p{line-height:1.55}.muted{color:#667085}label{display:block;font-weight:650;margin:12px 0 5px}input,select{width:100%;box-sizing:border-box;padding:10px;border:1px solid #ccd2dc;border-radius:8px;font:inherit}.check{display:flex;gap:8px;align-items:center;font-weight:400}.check input{width:auto}.tabs{display:flex;gap:6px;flex-wrap:wrap}.tabs button{border:0;border-radius:8px;padding:9px;background:#f0f2f5;cursor:pointer}.tabs .on{background:#e5eaff;color:#2947a3}.pane{margin-top:18px}.hide{display:none}.eq{font-size:18px;overflow-x:auto;text-align:left}.eq mjx-container[display="true"]{text-align:left!important;margin-left:0!important;margin-right:0!important}.report{background:#f8fafc;padding:14px;border-radius:10px}@media(max-width:800px){main{grid-template-columns:1fr}}</style></head><body><header><h1>MLM Equation Builder</h1><p class="muted">Build your multilevel model. Generate equations, explanations, and reporting text.</p></header><main><section class="card"><h2>Build your model</h2><label>Outcome</label><input id="y" value="Math Achievement"><label>Level 1 unit</label><input id="l1" value="Student"><label>Level 2 unit</label><input id="l2" value="School"><label>Level 1 predictor</label><input id="x" value="SES"><label>Centering</label><select id="c"><option value="none">None</option><option value="grand">Grand-mean centered</option><option value="group" selected>Group-mean centered</option></select><h3 style="margin-top:20px">Random effects</h3><label class="check"><input id="ri" type="checkbox" checked>Random intercept</label><label class="check"><input id="random" type="checkbox" checked>Random slope: <span id="randomLabel">SES</span></label><label class="check" id="rew"><input id="re" type="checkbox" checked>Reintroduce group mean at Level 2</label><label>Level 2 predictor</label><input id="w" value="School Resources"><label class="check"><input id="cross" type="checkbox" checked>Predict Level 1 slope (cross-level interaction)</label><p id="warn" class="muted" style="display:none;color:#a15c00"></p><label>Level 2 centering</label><select id="wc"><option value="none">None</option><option value="grand" selected>Grand-mean centered</option></select><h3 style="margin-top:20px">Additional Level 2 predictors</h3>
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MLM Equation Builder</title><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script><style>body{margin:0;font:15px system-ui;background:#f6f7fb;color:#172033}header{padding:28px;max-width:1150px;margin:auto}main{max-width:1150px;margin:auto;padding:0 20px 30px;display:grid;grid-template-columns:380px 1fr;gap:20px}.card{background:white;border:1px solid #e3e6ec;border-radius:14px;padding:20px}h1{margin:0}p{line-height:1.55}.muted{color:#667085}label{display:block;font-weight:650;margin:12px 0 5px}input,select{width:100%;box-sizing:border-box;padding:10px;border:1px solid #ccd2dc;border-radius:8px;font:inherit}.check{display:flex;gap:8px;align-items:center;font-weight:400}.check input{width:auto}.tabs{display:flex;gap:6px;flex-wrap:wrap}.tabs button{border:0;border-radius:8px;padding:9px;background:#f0f2f5;cursor:pointer}.tabs .on{background:#e5eaff;color:#2947a3}.pane{margin-top:18px}.hide{display:none}.eq{font-size:18px;overflow-x:auto;text-align:left}.eq mjx-container[display="true"]{text-align:left!important;margin-left:0!important;margin-right:0!important}.report{background:#f8fafc;padding:14px;border-radius:10px}@media(max-width:800px){main{grid-template-columns:1fr}}</style></head><body><header><h1>MLM Equation Builder</h1><p class="muted">Build your multilevel model. Generate equations, explanations, and reporting text.</p></header><main><section class="card"><h2>Build your model</h2><label>Outcome</label><input id="y" value="Math Achievement"><label>Level 1 unit</label><input id="l1" value="Student"><label>Level 2 unit</label><input id="l2" value="School"><label>Level 1 predictor</label><input id="x" value="SES"><label>Centering</label><select id="c"><option value="none">None</option><option value="grand">Grand-mean centered</option><option value="group" selected>Group-mean centered</option></select><h3 style="margin-top:20px">Random effects</h3><label class="check"><input id="ri" type="checkbox" checked>Random intercept</label><label class="check"><input id="random" type="checkbox" checked>Random slope: <span id="randomLabel">SES</span></label><label class="check" id="rew"><input id="re" type="checkbox" checked>Reintroduce group mean at Level 2</label><label>Level 2 predictor</label><input id="w" value="School Resources"><h3 style="margin-top:20px">Cross-level interactions</h3><div id="crossList"></div><button type="button" id="addCross" style="width:100%;padding:10px;border:1px solid #ccd2dc;border-radius:8px;background:#fff;cursor:pointer;font:inherit">+ Add Cross-Level Interaction</button><p id="warn" class="muted" style="display:none;color:#a15c00"></p><label>Level 2 centering</label><select id="wc"><option value="none">None</option><option value="grand" selected>Grand-mean centered</option></select><h3 style="margin-top:20px">Additional Level 2 predictors</h3>
 <div id="extraL2"></div>
 <button type="button" id="addL2" style="width:100%;padding:10px;border:1px solid #ccd2dc;border-radius:8px;background:#fff;cursor:pointer;font:inherit">+ Add Level 2 Predictor</button><label class="check"><input id="cov" type="checkbox" checked>Estimate intercept-slope covariance</label><hr style="border:0;border-top:1px solid #e3e6ec;margin:20px 0"><h3>Additional Level 1 predictors</h3>
 <div id="extraL1"></div>
 <button type="button" id="addL1" style="width:100%;padding:10px;border:1px solid #ccd2dc;border-radius:8px;background:#fff;cursor:pointer;font:inherit">+ Add Predictor</button>
-<p class="muted">v0.6: add multiple Level 1 and Level 2 predictors with predictor-specific centering and random-effects settings.</p></section><section class="card"><div class="tabs"><button class="on" data-p="equations">Equations</button><button data-p="variance">Variance</button><button data-p="explain">Explanation</button><button data-p="report">Manuscript draft</button></div><div id="equations" class="pane"></div><div id="variance" class="pane hide"></div><div id="explain" class="pane hide"></div><div id="report" class="pane hide"></div></section></main><footer style="max-width:1150px;margin:0 auto;padding:0 20px 28px;text-align:center;color:#667085;font-size:13px">Created by Chi-Ning (Nick) Chang, Ph.D. · Virginia Commonwealth University · <a href="mailto:changc10@vcu.edu" style="color:inherit">changc10@vcu.edu</a></footer><script>
+<p class="muted">v0.7: build multiple Level 1 and Level 2 predictors and specify flexible cross-level interactions.</p></section><section class="card"><div class="tabs"><button class="on" data-p="equations">Equations</button><button data-p="variance">Variance</button><button data-p="explain">Explanation</button><button data-p="report">Manuscript draft</button></div><div id="equations" class="pane"></div><div id="variance" class="pane hide"></div><div id="explain" class="pane hide"></div><div id="report" class="pane hide"></div></section></main><footer style="max-width:1150px;margin:0 auto;padding:0 20px 28px;text-align:center;color:#667085;font-size:13px">Created by Chi-Ning (Nick) Chang, Ph.D. · Virginia Commonwealth University · <a href="mailto:changc10@vcu.edu" style="color:inherit">changc10@vcu.edu</a></footer><script>
 var q=function(i){return document.getElementById(i)};
 var clean=function(s){return s.replace(/[^A-Za-z0-9]/g,"")||"X"};
 var tv=function(s){return "\\mathrm{"+clean(s)+"}"};
-var extraL1=[], extraL2=[], nextId=2, nextL2Id=2;
+var extraL1=[], extraL2=[], crosses=[], nextId=2, nextL2Id=2, nextCrossId=1;
 
 function addL1(name){
   extraL1.push({id:nextId++,name:name||("Predictor "+nextId),centering:"none",random:false,re:false});
-  drawExtra(); render();
+  drawExtra(); drawCross(); render();
 }
-function removeL1(id){extraL1=extraL1.filter(function(p){return p.id!==id});drawExtra();render()}
+function removeL1(id){extraL1=extraL1.filter(function(p){return p.id!==id});drawExtra();drawCross();render()}
 function drawExtra(){
   q("extraL1").innerHTML=extraL1.map(function(p,k){
     return '<div class="extra-p" data-id="'+p.id+'" style="margin:12px 0;padding:14px;border:1px solid #e3e6ec;border-radius:10px">'+
@@ -39,9 +39,9 @@ function term(P,c){
 }
 function addL2(name){
   extraL2.push({id:nextL2Id++,name:name||("Level 2 Predictor "+nextL2Id),centering:"none"});
-  drawExtraL2(); render();
+  drawExtraL2(); drawCross(); render();
 }
-function removeL2(id){extraL2=extraL2.filter(function(p){return p.id!==id});drawExtraL2();render()}
+function removeL2(id){extraL2=extraL2.filter(function(p){return p.id!==id});drawExtraL2();drawCross();render()}
 function drawExtraL2(){
   q("extraL2").innerHTML=extraL2.map(function(p,k){
     return '<div class="extra-l2" data-id="'+p.id+'" style="margin:12px 0;padding:14px;border:1px solid #e3e6ec;border-radius:10px">'+
@@ -56,17 +56,40 @@ function drawExtraL2(){
   });
   document.querySelectorAll(".remove-l2").forEach(function(b){b.onclick=function(){removeL2(+this.dataset.id)}});
 }
+function l1Options(){
+  return [{key:"x1",name:q("x").value,beta:1}].concat(extraL1.map(function(p,k){return {key:"x"+p.id,name:p.name,beta:k+2}}));
+}
+function l2Options(){
+  return [{key:"w1",name:q("w").value}].concat(extraL2.map(function(p){return {key:"w"+p.id,name:p.name}}));
+}
+function addCross(){
+  var a=l1Options(),b=l2Options(); if(!a.length||!b.length)return;
+  crosses.push({id:nextCrossId++,l1:a[0].key,l2:b[0].key}); drawCross();render();
+}
+function removeCross(id){crosses=crosses.filter(function(z){return z.id!==id});drawCross();render()}
+function drawCross(){
+  var a=l1Options(),b=l2Options();
+  crosses=crosses.filter(function(z){return a.some(function(x){return x.key===z.l1})&&b.some(function(x){return x.key===z.l2})});
+  q("crossList").innerHTML=crosses.map(function(z,k){
+    return '<div class="cross-card" data-id="'+z.id+'" style="margin:12px 0;padding:14px;border:1px solid #e3e6ec;border-radius:10px"><div style="display:flex;justify-content:space-between;align-items:center"><strong>Interaction '+(k+1)+'</strong><button type="button" class="remove-cross" data-id="'+z.id+'" style="border:0;background:none;cursor:pointer;color:#667085">Remove</button></div><label>Level 2 predictor</label><select class="cross-l2">'+b.map(function(x){return '<option value="'+x.key+'"'+(x.key===z.l2?' selected':'')+'>'+x.name+'</option>'}).join("")+'</select><label>Predicts Level 1 slope</label><select class="cross-l1">'+a.map(function(x){return '<option value="'+x.key+'"'+(x.key===z.l1?' selected':'')+'>'+x.name+'</option>'}).join("")+'</select></div>'
+  }).join("");
+  document.querySelectorAll(".cross-card").forEach(function(card){
+    var z=crosses.find(function(x){return x.id===+card.dataset.id});
+    card.querySelector(".cross-l1").onchange=function(){z.l1=this.value;render()};
+    card.querySelector(".cross-l2").onchange=function(){z.l2=this.value;render()};
+  });
+  document.querySelectorAll(".remove-cross").forEach(function(b){b.onclick=function(){removeCross(+this.dataset.id)}});
+}
 function render(){
   var Y=tv(q("y").value),X=tv(q("x").value),W=tv(q("w").value),c=q("c").value,wc=q("wc").value;
-  var ri=q("ri").checked,ran=q("random").checked,re=q("re").checked&&c==="group",cross=q("cross").checked,cov=q("cov").checked&&ri&&ran;
+  var ri=q("ri").checked,ran=q("random").checked,re=q("re").checked&&c==="group",cov=q("cov").checked&&ri&&ran;
   q("randomLabel").textContent=q("x").value;
   q("rew").style.display=c==="group"?"flex":"none";
   var wt=wc==="grand"?"("+W+"_j-\\bar{"+W+"})":W+"_j", xt=term(X,c); var l2extras=extraL2.map(function(p){var P=tv(p.name);return {p:p,P:P,t:p.centering==="grand"?"("+P+"_j-\\bar{"+P+"})":P+"_j"}});
   q("cov").disabled=!(ri&&ran); if(!(ri&&ran))q("cov").checked=false;
-  q("warn").style.display=(!ran&&cross)?"block":"none";
-  q("warn").textContent=(!ran&&cross)?"Note: a Level 2 predictor of a Level 1 slope is retained as a cross-level interaction even when the residual slope variance is fixed to zero.":"";
+  q("warn").style.display="none";q("warn").textContent="";
 
-  var extras=extraL1.map(function(p,k){return {p:p,P:tv(p.name),t:term(tv(p.name),p.centering),beta:k+2}});
+  var extras=extraL1.map(function(p,k){return {p:p,P:tv(p.name),t:term(tv(p.name),p.centering),beta:k+2}});var l1all=[{key:"x1",name:q("x").value,P:X,t:xt,beta:1,random:ran}].concat(extras.map(function(z){return {key:"x"+z.p.id,name:z.p.name,P:z.P,t:z.t,beta:z.beta,random:z.p.random}}));var l2all=[{key:"w1",name:q("w").value,P:W,t:wt}].concat(l2extras.map(function(z){return {key:"w"+z.p.id,name:z.p.name,P:z.P,t:z.t}}));var activeCross=crosses.map(function(cr){return {cr:cr,L1:l1all.find(function(z){return z.key===cr.l1}),L2:l2all.find(function(z){return z.key===cr.l2})}}).filter(function(z){return z.L1&&z.L2});
   var l1=Y+"_{ij}=\\beta_{0j}+\\beta_{1j}"+xt;
   extras.forEach(function(z){l1+="+\\beta_{"+z.beta+"j}"+z.t}); l1+="+r_{ij}";
 
@@ -74,14 +97,14 @@ function render(){
   if(re){b0+="+\\gamma_{0"+gidx+"}\\bar{"+X+"}_{\\cdot j}";gidx++}
   extras.forEach(function(z){if(z.p.centering==="group"&&z.p.re){b0+="+\\gamma_{0"+gidx+"}\\bar{"+z.P+"}_{\\cdot j}";gidx++}});
   b0+="+\\gamma_{0"+gidx+"}"+wt;gidx++;l2extras.forEach(function(z){b0+="+\\gamma_{0"+gidx+"}"+z.t;gidx++});b0+=(ri?"+u_{0j}":"");
-  var b1="\\beta_{1j}=\\gamma_{10}"+(cross?"+\\gamma_{11}"+wt:"")+(ran?"+u_{1j}":"");
+  var b1="\\beta_{1j}=\\gamma_{10}";activeCross.filter(function(z){return z.L1.beta===1}).forEach(function(z,k){b1+="+\\gamma_{1"+(k+1)+"}"+z.L2.t});b1+=(ran?"+u_{1j}":"");
   var l2eq='<div class=eq>\\['+b0+'\\]</div><div class=eq>\\['+b1+'\\]</div>';
-  extras.forEach(function(z){l2eq+='<div class=eq>\\[\\beta_{'+z.beta+'j}=\\gamma_{'+z.beta+'0}'+(z.p.random?'+u_{'+z.beta+'j}':'')+'\\]</div>'});
+  extras.forEach(function(z){var bz='\\beta_{'+z.beta+'j}=\\gamma_{'+z.beta+'0}';activeCross.filter(function(a){return a.L1.beta===z.beta}).forEach(function(a,k){bz+='+\\gamma_{'+z.beta+(k+1)+'}'+a.L2.t});bz+=(z.p.random?'+u_{'+z.beta+'j}':'');l2eq+='<div class=eq>\\['+bz+'\\]</div>'});
 
   var comb=Y+"_{ij}=\\gamma_{00}", gi=1;
   if(re){comb+="+\\gamma_{0"+gi+"}\\bar{"+X+"}_{\\cdot j}";gi++}
   extras.forEach(function(z){if(z.p.centering==="group"&&z.p.re){comb+="+\\gamma_{0"+gi+"}\\bar{"+z.P+"}_{\\cdot j}";gi++}});
-  comb+="+\\gamma_{0"+gi+"}"+wt;gi++;l2extras.forEach(function(z){comb+="+\\gamma_{0"+gi+"}"+z.t;gi++});comb+="+\\gamma_{10}"+xt+(cross?"+\\gamma_{11}"+wt+xt:"");
+  comb+="+\\gamma_{0"+gi+"}"+wt;gi++;l2extras.forEach(function(z){comb+="+\\gamma_{0"+gi+"}"+z.t;gi++});comb+="+\\gamma_{10}"+xt;activeCross.forEach(function(z,k){comb+="+\\gamma_{"+z.L1.beta+(k+1)+"}"+z.L2.t+z.L1.t});
   extras.forEach(function(z){comb+="+\\gamma_{"+z.beta+"0}"+z.t});
   if(ri)comb+="+u_{0j}"; if(ran)comb+="+u_{1j}"+xt;
   extras.forEach(function(z){if(z.p.random)comb+="+u_{"+z.beta+"j}"+z.t}); comb+="+r_{ij}";
@@ -100,16 +123,15 @@ function render(){
   var desc=q("y").value+" is modeled for "+q("l1").value.toLowerCase()+"s nested within "+q("l2").value.toLowerCase()+"s. ";
   desc+=q("x").value+(c==="group"?" is group-mean centered.":c==="grand"?" is grand-mean centered.":" is uncentered.");
   if(extras.length)desc+=" The model also includes "+extras.map(function(z){return z.p.name}).join(", ")+" as additional Level 1 predictor"+(extras.length>1?"s.":".");if(l2extras.length)desc+=" Additional Level 2 predictors include "+l2extras.map(function(z){return z.p.name}).join(", ")+ ".";
-  q("explain").innerHTML="<h3>Model interpretation</h3><p>"+desc+"</p><p>"+(ri?"A random intercept is included. ":"No random intercept is included. ")+(ran?"The "+q("x").value+" slope is random.":"The "+q("x").value+" slope is fixed.")+"</p>";
+  q("explain").innerHTML="<h3>Model interpretation</h3><p>"+desc+"</p><p>"+(ri?"A random intercept is included. ":"No random intercept is included. ")+(ran?"The "+q("x").value+" slope is random.":"The "+q("x").value+" slope is fixed.")+(activeCross.length?" Cross-level interactions: "+activeCross.map(function(z){return z.L2.name+" predicts the "+z.L1.name+" slope"}).join("; ")+".":"")+"</p>";
 
   var rpt="A two-level linear model was specified with "+q("l1").value.toLowerCase()+"s (Level 1) nested within "+q("l2").value.toLowerCase()+"s (Level 2). "+q("y").value+" served as the outcome. "+q("x").value+" was included as a Level 1 predictor.";
   if(extras.length)rpt+=" Additional Level 1 predictors included "+extras.map(function(z){return z.p.name}).join(", ")+".";
-  rpt+=" "+q("w").value+" was included as a Level 2 predictor."+(l2extras.length?" Additional Level 2 predictors included "+l2extras.map(function(z){return z.p.name}).join(", ")+".":"")+(ri?" A random intercept was included.":" No random intercept was included.")+(ran?" The "+q("x").value+" slope was allowed to vary across "+q("l2").value.toLowerCase()+"s.":"");
+  rpt+=" "+q("w").value+" was included as a Level 2 predictor."+(l2extras.length?" Additional Level 2 predictors included "+l2extras.map(function(z){return z.p.name}).join(", ")+".":"")+(activeCross.length?" Cross-level interactions were specified such that "+activeCross.map(function(z){return z.L2.name+" predicted the "+z.L1.name+" slope"}).join("; ")+".":"")+(ri?" A random intercept was included.":" No random intercept was included.")+(ran?" The "+q("x").value+" slope was allowed to vary across "+q("l2").value.toLowerCase()+"s.":"");
   q("report").innerHTML='<h3>Draft for reporting</h3><div class=report>'+rpt+"</div>";
   if(window.MathJax&&MathJax.typesetPromise)MathJax.typesetPromise();
 }
 document.querySelectorAll("input,select").forEach(function(e){e.addEventListener("input",render)});
 document.querySelectorAll(".tabs button").forEach(function(b){b.onclick=function(){document.querySelectorAll(".tabs button").forEach(function(x){x.classList.remove("on")});document.querySelectorAll(".pane").forEach(function(x){x.classList.add("hide")});b.classList.add("on");q(b.dataset.p).classList.remove("hide")}});
-q("addL1").onclick=function(){addL1()};q("addL2").onclick=function(){addL2()};
-drawExtra();drawExtraL2();window.addEventListener("load",render);render();
+q("addL1").onclick=function(){addL1()};q("addL2").onclick=function(){addL2()};q("addCross").onclick=function(){addCross()};crosses.push({id:nextCrossId++,l1:"x1",l2:"w1"});drawExtra();drawExtraL2();drawCross();window.addEventListener("load",render);render();
 </script></body></html>
