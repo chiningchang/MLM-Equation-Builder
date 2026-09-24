@@ -46,7 +46,7 @@ footer{padding:4px 16px 24px!important;font-size:12px!important;line-height:1.5}
 
 <div class="builder-section"><div class="section-title"><h3>4. Cross-Level Interactions</h3><button type="button" class="collapsebtn" aria-label="Toggle section">−</button></div><div class="builder-body"><p class="helper">After defining Level 1 and Level 2 predictors, choose which Level 2 predictor predicts which Level 1 slope.</p>
 <div id="crossList"></div><button type="button" id="addCross" class="addbtn">＋ Add Cross-Level Interaction</button><p id="warn" class="muted" style="display:none;color:#a15c00"></p></div></div>
-</section><section class="card"><span class="model-tag">Live model output</span><div class="tabs"><button class="on" data-p="equations">Equations</button><button data-p="variance">Variance</button><button data-p="explain">Explanation</button><button data-p="report">Model specification draft</button></div><div id="equations" class="pane"></div><div id="variance" class="pane hide"></div><div id="explain" class="pane hide"></div><div id="report" class="pane hide"></div></section></main><footer style="max-width:1150px;margin:0 auto;padding:0 20px 28px;text-align:center;color:#667085;font-size:13px">Created by Chi-Ning (Nick) Chang, Ph.D. · Virginia Commonwealth University · <a href="mailto:changc10@vcu.edu" style="color:inherit">changc10@vcu.edu</a><div style="margin-top:6px;font-size:12px">v2.2.2</div></footer><script>
+</section><section class="card"><span class="model-tag">Live model output</span><div class="tabs"><button class="on" data-p="equations">Equations</button><button data-p="variance">Variance</button><button data-p="explain">Explanation</button><button data-p="report">Model specification draft</button></div><div id="equations" class="pane"></div><div id="variance" class="pane hide"></div><div id="explain" class="pane hide"></div><div id="report" class="pane hide"></div></section></main><footer style="max-width:1150px;margin:0 auto;padding:0 20px 28px;text-align:center;color:#667085;font-size:13px">Created by Chi-Ning (Nick) Chang, Ph.D. · Virginia Commonwealth University · <a href="mailto:changc10@vcu.edu" style="color:inherit">changc10@vcu.edu</a><div style="margin-top:6px;font-size:12px">v2.2.3</div></footer><script>
 var q=function(i){return document.getElementById(i)};
 var clean=function(s){return s.replace(/[^A-Za-z0-9]/g,"")||"X"};
 var tv=function(s){return "\\mathrm{"+clean(s)+"}"};
@@ -148,12 +148,25 @@ function drawCross(){
   document.querySelectorAll(".remove-cross").forEach(function(b){b.onclick=function(){removeCross(+this.dataset.id)}});
 }
 function wordLinear(tex){
-  return tex
-    .replace(/\\mathrm\{([^{}]+)\}/g,"$1")
-    .replace(/\\operatorname\{logit\}/g,"\\logit")
-    .replace(/\\operatorname\{Bernoulli\}/g,"\\mathrm{Bernoulli}")
-    .replace(/\\left|\\right/g,"")
-    .replace(/\\,/g," ");
+  var out=tex;
+  out=out.replace(/\\mathrm\{([^{}]+)\}/g,"$1");
+  out=out.replace(/\\operatorname\{logit\}/g,"logit");
+  out=out.replace(/\\operatorname\{Bernoulli\}/g,"Bernoulli");
+  out=out.replace(/\\operatorname\{Var\}/g,"Var");
+  out=out.replace(/\\operatorname\{Cov\}/g,"Cov");
+  out=out.replace(/\\bar\{([^{}]+)\}/g,"($1)̅");
+  out=out.replace(/\\gamma/g,"γ");
+  out=out.replace(/\\beta/g,"β");
+  out=out.replace(/\\tau/g,"τ");
+  out=out.replace(/\\sigma/g,"σ");
+  out=out.replace(/\\pi/g,"π");
+  out=out.replace(/\\cdot/g,"·");
+  out=out.replace(/\\sim/g,"~");
+  out=out.replace(/\\left|\\right/g,"");
+  out=out.replace(/\\,/g," ");
+  out=out.replace(/_\{([^{}]+)\}/g,"_($1)");
+  out=out.replace(/\^\{([^{}]+)\}/g,"^($1)");
+  return out;
 }
 function copyText(txt,button,reset){
   if(navigator.clipboard&&navigator.clipboard.writeText){
@@ -189,7 +202,7 @@ function render(){
   if(ri)comb+="+u_{0j}"; if(ran)comb+="+u_{1j}"+xt;
   extras.forEach(function(z){if(z.p.random)comb+="+u_{"+z.beta+"j}"+z.t}); if(!binary)comb+="+r_{ij}";
 
-  q("equations").innerHTML="<h3>Level 1</h3>"+(binary?"<div class=eq>\\["+Y+"_{ij}\\sim \\operatorname{Bernoulli}(\\pi_{ij})\\]</div>":"")+"<div class=eq>\\["+l1+"\\]</div><h3>Level 2</h3>"+l2eq+"<h3>Combined model</h3><div class=eq>\\["+comb+"\\]</div><div class=\"copyrow\"><button type=\"button\" class=\"copybtn\" id=\"copyEq\">Copy LaTeX</button><button type=\"button\" class=\"copybtn\" id=\"copyWord\">Copy for Word</button></div><p class=\"helper\" style=\"margin-top:8px\">For Word: open an Equation box (Insert → Equation), choose LaTeX input if needed, then paste.</p>";
+  q("equations").innerHTML="<h3>Level 1</h3>"+(binary?"<div class=eq>\\["+Y+"_{ij}\\sim \\operatorname{Bernoulli}(\\pi_{ij})\\]</div>":"")+"<div class=eq>\\["+l1+"\\]</div><h3>Level 2</h3>"+l2eq+"<h3>Combined model</h3><div class=eq>\\["+comb+"\\]</div><div class=\"copyrow\"><button type=\"button\" class=\"copybtn\" id=\"copyEq\">Copy LaTeX</button><button type=\"button\" class=\"copybtn\" id=\"copyWord\">Copy for Word</button></div><p class=\"helper\" style=\"margin-top:8px\">For Word: open an Equation box (Insert → Equation), then paste. Word copy uses Word-friendly linear notation rather than raw LaTeX commands.</p>";
 
   var randomMeta=[]; if(ri)randomMeta.push({key:"i",label:"u_{0j}",idx:"0",name:"random intercept"}); if(hasL1&&ran)randomMeta.push({key:"x1",label:"u_{1j}",idx:"1",name:q("x").value+" slope"}); extras.forEach(function(z){if(z.p.random)randomMeta.push({key:"x"+z.p.id,label:"u_{"+z.beta+"j}",idx:String(z.beta),name:z.p.name+" slope"})});
   var varianceLines=[];if(!binary)varianceLines.push("r_{ij}\\sim N(0,\\sigma^2)");var vh=randomMeta.length?'<h3>Level 2 random effects</h3><p>The model includes '+randomMeta.map(function(z){return z.name}).join(", ")+'.</p>':"<h3>Level 2 random effects</h3><p>No Level 2 random effects selected.</p>";
@@ -206,7 +219,7 @@ function render(){
     if(chosen.length){vh+='<h3>Estimated covariances</h3>';chosen.forEach(function(z){var ii=Math.min(+z.A.idx,+z.B.idx),jj=Math.max(+z.A.idx,+z.B.idx);var cl='\\operatorname{Cov}('+z.A.label+','+z.B.label+')=\\tau_{'+ii+jj+'}';varianceLines.push(cl);vh+='<div class=eq>\\['+cl+'\\]</div>'})}
     else vh+='<p>No random-effect covariances are selected.</p>';
   }
-  vh+='<div class="copyrow"><button type="button" class="copybtn" id="copyVar">Copy LaTeX</button><button type="button" class="copybtn" id="copyVarWord">Copy for Word</button></div><p class="helper" style="margin-top:8px">For Word: paste into an Equation box using LaTeX input. Matrix notation may require Word’s equation conversion.</p>';q("variance").innerHTML=vh;
+  vh+='<div class="copyrow"><button type="button" class="copybtn" id="copyVar">Copy LaTeX</button><button type="button" class="copybtn" id="copyVarWord">Copy for Word</button></div><p class="helper" style="margin-top:8px">For Word: paste into an Equation box. Variance components use Word-friendly linear notation; the full matrix may still need Word equation conversion.</p>';q("variance").innerHTML=vh;
 
   var outcome=q("y").value, l1unit=q("l1").value, l2unit=q("l2").value,eventLabel=q("eventLabel").value||"event";
   var centeringText=function(name,cc){
