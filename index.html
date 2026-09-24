@@ -46,7 +46,7 @@ footer{padding:4px 16px 24px!important;font-size:12px!important;line-height:1.5}
 
 <div class="builder-section"><div class="section-title"><h3>4. Cross-Level Interactions</h3><button type="button" class="collapsebtn" aria-label="Toggle section">−</button></div><div class="builder-body"><p class="helper">After defining Level 1 and Level 2 predictors, choose which Level 2 predictor predicts which Level 1 slope.</p>
 <div id="crossList"></div><button type="button" id="addCross" class="addbtn">＋ Add Cross-Level Interaction</button><p id="warn" class="muted" style="display:none;color:#a15c00"></p></div></div>
-</section><section class="card"><span class="model-tag">Live model output</span><div class="tabs"><button class="on" data-p="equations">Equations</button><button data-p="variance">Variance</button><button data-p="explain">Explanation</button><button data-p="report">Model specification draft</button></div><div id="equations" class="pane"></div><div id="variance" class="pane hide"></div><div id="explain" class="pane hide"></div><div id="report" class="pane hide"></div></section></main><footer style="max-width:1150px;margin:0 auto;padding:0 20px 28px;text-align:center;color:#667085;font-size:13px">Created by Chi-Ning (Nick) Chang, Ph.D. · Virginia Commonwealth University · <a href="mailto:changc10@vcu.edu" style="color:inherit">changc10@vcu.edu</a><div style="margin-top:6px;font-size:12px">v2.3</div></footer><script>
+</section><section class="card"><span class="model-tag">Live model output</span><div class="tabs"><button class="on" data-p="equations">Equations</button><button data-p="variance">Variance</button><button data-p="explain">Explanation</button><button data-p="report">Model specification draft</button></div><div id="equations" class="pane"></div><div id="variance" class="pane hide"></div><div id="explain" class="pane hide"></div><div id="report" class="pane hide"></div></section></main><footer style="max-width:1150px;margin:0 auto;padding:0 20px 28px;text-align:center;color:#667085;font-size:13px">Created by Chi-Ning (Nick) Chang, Ph.D. · Virginia Commonwealth University · <a href="mailto:changc10@vcu.edu" style="color:inherit">changc10@vcu.edu</a><div style="margin-top:6px;font-size:12px">v2.4</div></footer><script>
 var q=function(i){return document.getElementById(i)};
 var clean=function(s){return s.replace(/[^A-Za-z0-9]/g,"")||"X"};
 var tv=function(s){return "\\mathrm{"+clean(s)+"}"};
@@ -168,21 +168,22 @@ function wordLinear(tex){
   out=out.replace(/\^\{([^{}]+)\}/g,"^($1)");
   return out;
 }
+function docxDisplayTex(tex){
+  var pairs=[[clean(q("y").value),q("y").value],[clean(q("x").value),q("x").value],[clean(q("w").value),q("w").value]];
+  extraL1.forEach(function(p){pairs.push([clean(p.name),p.name])});
+  extraL2.forEach(function(p){pairs.push([clean(p.name),p.name])});
+  pairs.sort(function(a,b){return b[0].length-a[0].length});
+  pairs.forEach(function(p){tex=tex.split("\\mathrm{"+p[0]+"}").join("\\mathrm{"+p[1]+"}")});
+  return tex;
+}
 function docxMathParts(tex){
   var D=window.docx;if(!D)return [];
-  var t=tex
-    .replace(/\\operatorname\{([^{}]+)\}/g,"$1")
-    .replace(/\\mathrm\{([^{}]+)\}/g,"$1")
-    .replace(/\\left|\\right/g,"")
-    .replace(/\\,/g," ")
-    .replace(/\\cdot/g,"·")
-    .replace(/\\sim/g,"~")
-    .replace(/\\gamma/g,"γ").replace(/\\beta/g,"β").replace(/\\tau/g,"τ")
-    .replace(/\\sigma/g,"σ").replace(/\\pi/g,"π")
-    .replace(/\\bar\{([^{}]+)\}/g,function(_,x){return Array.from(x).map(function(ch){return ch+"̅"}).join("")});
-  var out=[],re=/([A-Za-zΑ-ω]+(?:̅[A-Za-zΑ-ω̅]*)?|[γβτσπ]|[^A-Za-zΑ-ωγβτσπ_\\^]+)(?:_\{([^{}]+)\})?(?:\^\{?([^{}+\- ]+)\}?)?/g,m;
+  var bars=[];
+  tex=docxDisplayTex(tex).replace(/\\bar\{([^{}]+)\}/g,function(_,x){var key="§BAR"+bars.length+"§";bars.push(x);return key});
+  var t=tex.replace(/\\operatorname\{([^{}]+)\}/g,"$1").replace(/\\mathrm\{([^{}]+)\}/g,"$1").replace(/\\left|\\right/g,"").replace(/\\,/g," ").replace(/\\cdot/g,"·").replace(/\\sim/g,"~").replace(/\\gamma/g,"γ").replace(/\\beta/g,"β").replace(/\\tau/g,"τ").replace(/\\sigma/g,"σ").replace(/\\pi/g,"π").replace(/§BAR(\d+)§/g,function(_,n){return bars[+n]+"\u0305"});
+  var out=[],re=/([^_\\^]+?)(?:_\{([^{}]+)\})?(?:\^\{?([^{}+\- ]+)\}?)?(?=(?:[^_\\^]*?(?:_\{|$)))/g,m;
   while((m=re.exec(t))){
-    var base=m[1],sub=m[2],sup=m[3];
+    var base=m[1],sub=m[2],sup=m[3];if(!base&&!sub&&!sup)continue;
     if(sub&&sup)out.push(new D.MathSubSuperScript({children:[new D.MathRun(base)],subScript:[new D.MathRun(sub.replace(/\\cdot/g,"·"))],superScript:[new D.MathRun(sup)]}));
     else if(sub)out.push(new D.MathSubScript({children:[new D.MathRun(base)],subScript:[new D.MathRun(sub.replace(/\\cdot/g,"·"))]}));
     else if(sup)out.push(new D.MathSuperScript({children:[new D.MathRun(base)],superScript:[new D.MathRun(sup)]}));
@@ -190,17 +191,28 @@ function docxMathParts(tex){
   }
   return out;
 }
-function docxMathParagraph(tex){
-  var D=window.docx;
-  return new D.Paragraph({spacing:{after:120},children:[new D.Math({children:docxMathParts(tex)})]});
+function docxMathParagraph(tex,indent){
+  var D=window.docx;return new D.Paragraph({indent:indent?{left:indent}:undefined,spacing:{after:100},children:[new D.Math({children:docxMathParts(tex)})]});
+}
+function docxEquationBlock(tex){
+  var terms=tex.split(/(?=[+\-])/),lines=[],current="";
+  terms.forEach(function(term){if(current&&(current.length+term.length)>82){lines.push(current);current=term}else current+=term});
+  if(current)lines.push(current);
+  return lines.map(function(line,i){return docxMathParagraph(line,i?360:0)});
 }
 function docxHeading(text,level){
+  var D=window.docx;return new D.Paragraph({heading:level||D.HeadingLevel.HEADING_2,spacing:{before:180,after:100},children:[new D.TextRun({text:text,bold:true})]});
+}
+function docxGMatrix(randomMeta,covPairs){
   var D=window.docx;
-  return new D.Paragraph({heading:level||D.HeadingLevel.HEADING_2,spacing:{before:180,after:100},children:[new D.TextRun({text:text,bold:true})]});
+  var rows=randomMeta.map(function(A,i){return new D.TableRow({children:randomMeta.map(function(B,j){
+    var val;if(i===j)val="\\tau_{"+A.idx+A.idx+"}";else{var key=[A.key,B.key].sort().join("|"),ii=Math.min(+A.idx,+B.idx),jj=Math.max(+A.idx,+B.idx);val=covPairs[key]?"\\tau_{"+ii+jj+"}":"0"}
+    return new D.TableCell({borders:{top:{style:D.BorderStyle.NONE},bottom:{style:D.BorderStyle.NONE},left:{style:D.BorderStyle.NONE},right:{style:D.BorderStyle.NONE}},margins:{top:40,bottom:40,left:100,right:100},children:[docxMathParagraph(val)]});
+  })})});
+  return new D.Table({rows:rows,alignment:D.AlignmentType.CENTER,width:{size:55,type:D.WidthType.PERCENTAGE}});
 }
 function saveBlob(blob,name){
-  var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();
-  setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},1000);
+  var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},1000);
 }
 function copyText(txt,button,reset){
   if(navigator.clipboard&&navigator.clipboard.writeText){
@@ -341,22 +353,12 @@ function render(){
       children.push(docxMathParagraph(ss));
     });
     children.push(docxHeading("Combined model",D.HeadingLevel.HEADING_1));
-    children.push(docxMathParagraph(comb));
+    docxEquationBlock(comb).forEach(function(p){children.push(p)});
     children.push(docxHeading("Variance and covariance",D.HeadingLevel.HEADING_1));
     if(!binary)children.push(docxMathParagraph("r_{ij}\\sim N(0,\\sigma^2)"));
     if(randomMeta.length){
       children.push(new D.Paragraph({children:[new D.TextRun({text:"Random-effects variance–covariance matrix",bold:true})]}));
-      var tableRows=[new D.TableRow({children:[new D.TableCell({children:[new D.Paragraph("")]})].concat(randomMeta.map(function(z){return new D.TableCell({children:[docxMathParagraph(z.label)]})}))})];
-      randomMeta.forEach(function(A,i){
-        var cells=[new D.TableCell({children:[docxMathParagraph(A.label)]})];
-        randomMeta.forEach(function(B,j){
-          var val;if(i===j)val="\\tau_{"+A.idx+A.idx+"}";
-          else{var key=[A.key,B.key].sort().join("|"),ii=Math.min(+A.idx,+B.idx),jj=Math.max(+A.idx,+B.idx);val=covPairs[key]?"\\tau_{"+ii+jj+"}":"0"}
-          cells.push(new D.TableCell({children:[docxMathParagraph(val)]}));
-        });
-        tableRows.push(new D.TableRow({children:cells}));
-      });
-      children.push(new D.Table({rows:tableRows,width:{size:100,type:D.WidthType.PERCENTAGE}}));
+      children.push(docxGMatrix(randomMeta,covPairs));
       randomMeta.forEach(function(z){children.push(docxMathParagraph("\\operatorname{Var}("+z.label+")=\\tau_{"+z.idx+z.idx+"}"))});
       chosen.forEach(function(z){var ii=Math.min(+z.A.idx,+z.B.idx),jj=Math.max(+z.A.idx,+z.B.idx);children.push(docxMathParagraph("\\operatorname{Cov}("+z.A.label+","+z.B.label+")=\\tau_{"+ii+jj+"}"))});
     }
